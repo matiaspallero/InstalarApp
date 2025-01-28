@@ -7,22 +7,30 @@
     "start": "expo start",
     "android": "expo start --android",
     "ios": "expo start --ios",
-    "web": "expo start --web"
+    "web": "expo start --web",
+    "lint": "eslint ."
   },
   "dependencies": {
     "@expo/metro-runtime": "~4.0.1",
+    "cors": "^2.8.5",
     "expo": "~52.0.27",
     "expo-sqlite": "~15.1.0",
     "expo-status-bar": "~2.0.1",
+    "express": "^4.21.2",
+    "module": "^1.2.5",
+    "mysql2": "^3.12.0",
     "react": "18.3.1",
     "react-dom": "18.3.1",
     "react-native": "0.76.6",
     "react-native-sqlite-storage": "^6.0.1",
     "react-native-table-component": "^1.2.2",
-    "react-native-web": "~0.19.13"
+    "react-native-web": "~0.19.13",
+    "sqlite": "^5.1.1"
   },
   "devDependencies": {
-    "@babel/core": "^7.20.0"
+    "@babel/core": "^7.20.0",
+    "eslint": "^8.57.0",
+    "eslint-config-expo": "~8.0.1"
   },
   "private": true
 }
