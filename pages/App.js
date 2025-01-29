@@ -1,9 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, StyleSheet, ActivityIndicator, Button, Dimensions } from 'react-native';
+import { View, Text, FlatList, StyleSheet, ActivityIndicator, Button, Dimensions, Modal, TextInput } from 'react-native';
+import { saveAire, deleteAire } from '../componentes/botones'; // Importar las funciones desde botones.js
 
 const App = () => {
   const [aires, setAires] = useState([]); // Estado para almacenar los datos de la tabla
   const [loading, setLoading] = useState(true); // Estado para manejar la carga
+  const [modalVisible, setModalVisible] = useState(false); // Estado para controlar la visibilidad del modal
+  const [currentAire, setCurrentAire] = useState(null); // Estado para almacenar el aire que se está editando
+  const [formData, setFormData] = useState({ Marca: '', Frigorias: '' }); // Estado para manejar los datos del formulario
 
   // Función para obtener los datos del backend
   const fetchData = async () => {
@@ -23,6 +27,25 @@ const App = () => {
     fetchData();
   }, []);
 
+  // Función para abrir el modal de agregar/editar
+  const openModal = (aire = null) => {
+    setCurrentAire(aire);
+    setFormData(aire ? { Marca: aire.Marca, Frigorias: aire.Frigorias } : { Marca: '', Frigorias: '' });
+    setModalVisible(true);
+  };
+
+  // Función para cerrar el modal
+  const closeModal = () => {
+    setModalVisible(false);
+    setCurrentAire(null);
+    setFormData({ Marca: '', Frigorias: '' });
+  };
+
+  // Función para manejar cambios en el formulario
+  const handleInputChange = (name, value) => {
+    setFormData({ ...formData, [name]: value });
+  };
+
   // Mostrar un indicador de carga mientras se obtienen los datos
   if (loading) {
     return (
@@ -37,6 +60,9 @@ const App = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Tabla de Aires Acondicionados</Text>
+      <View style={styles.buttonContainer}>
+        <Button title="Agregar Aire" onPress={() => openModal()} />
+      </View>
       <FlatList
         data={aires}
         keyExtractor={(item) => item.idAires.toString()}
@@ -44,18 +70,48 @@ const App = () => {
           <View style={styles.item}>
             <Text style={styles.marca}>Marca: {item.Marca}</Text>
             <Text style={styles.frigorias}>Frigorías: {item.Frigorias}</Text>
-            <Button style={styles.enviar}>Enviar</Button>
+            <View style={styles.actions}>
+              <Button title="Editar" onPress={() => openModal(item)} />
+              <Button title="Eliminar" onPress={() => deleteAire(item.idAires, fetchData)} />
+            </View>
           </View>
         )}
       />
-      <View>
 
-      </View>
+      {/* Modal para agregar/editar aires */}
+      <Modal visible={modalVisible} animationType="slide" transparent={true}>
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>{currentAire ? 'Editar Aire' : 'Agregar Aire'}</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Marca"
+              value={formData.Marca}
+              onChangeText={(text) => handleInputChange('Marca', text)}
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Frigorías"
+              value={formData.Frigorias.toString()}
+              onChangeText={(text) => {
+                // Solo permitir números
+                const numericValue = text.replace(/[^0-9]/g, '');
+                handleInputChange('Frigorias', numericValue);
+              }}
+              keyboardType="numeric"
+            />
+            <View style={styles.modalButtons}>
+              <Button title="Cancelar" onPress={closeModal} />
+              <Button title="Guardar" onPress={() => saveAire(currentAire, formData, fetchData, closeModal)} />
+            </View>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };
 
-// Estilos
+// Estilos (los mismos que antes)
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -68,11 +124,8 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     textAlign: 'center',
   },
-  FlatList: {
-    flex: 1,
-    justifyContent: 'center',
-    width: Dimensions.get('window').width * 0.7,
-    flexDirection: 'row',
+  buttonContainer: {
+    marginBottom: 20,
   },
   item: {
     backgroundColor: '#ffffff',
@@ -93,18 +146,47 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#555',
   },
+  actions: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    borderColor: '#ffffff',
+    borderRadius: 50,
+    marginTop: 10,
+  },
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
   },
-  enviar: {
-    backgroundColor: 'blue',
-    color: 'white',
-    borderRadius: 5,
-    padding: 10,
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalContent: {
+    width: Dimensions.get('window').width * 0.8,
+    padding: 20,
+    backgroundColor: '#fff',
+    borderRadius: 10,
+  },
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 20,
     textAlign: 'center',
-    
+  },
+  input: {
+    height: 40,
+    borderColor: '#ccc',
+    borderWidth: 1,
+    borderRadius: 5,
+    marginBottom: 15,
+    paddingHorizontal: 10,
+  },
+  modalButtons: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
 });
 

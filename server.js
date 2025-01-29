@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require('cors');
-const { obtenerAires, insertarAire } = require('./componentes/tablas'); // Importar funciones de tablas.js
+const { obtenerAires, insertarAire } = require('./componentes/tablas');
 
 const app = express();
 app.use(cors());
@@ -13,19 +13,30 @@ app.get('/aires', async (req, res) => {
     res.json(aires);
   } catch (error) {
     console.error('Error al obtener datos:', error);
-    res.status(500).send('Error en el servidor');
+    res.status(500).json({ message: 'Error en el servidor' });
   }
 });
 
 // Endpoint para insertar datos en la tabla Aires
 app.post('/aires', async (req, res) => {
-  const { Marca, Frigorias } = req.body;
   try {
-    const nuevoAire = await insertarAire(Marca, Frigorias);
-    res.status(201).json(nuevoAire);
+    const { Marca, Frigorias } = req.body;
+    
+    // Validaciones
+    if (!Marca || !Frigorias) {
+      return res.status(400).json({
+        message: 'La marca y las frigorías son requeridas'
+      });
+    }
+
+    const resultado = await insertarAire(Marca, Frigorias);
+    res.status(201).json(resultado);
   } catch (error) {
-    console.error('Error al insertar datos:', error);
-    res.status(500).send('Error en el servidor');
+    console.error('Error en el servidor:', error);
+    res.status(500).json({
+      message: 'Error en el servidor',
+      error: error.message
+    });
   }
 });
 
