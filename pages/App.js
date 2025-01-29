@@ -61,7 +61,7 @@ const App = () => {
     <View style={styles.container}>
       <Text style={styles.title}>Tabla de Aires Acondicionados</Text>
       <View style={styles.buttonContainer}>
-        <Button title="Agregar Aire" onPress={() => openModal()} />
+        <Button title="Agregar Aire" onPress={() => openModal()} style={styles.agregar} />
       </View>
       <FlatList
         data={aires}
@@ -71,8 +71,8 @@ const App = () => {
             <Text style={styles.marca}>Marca: {item.Marca}</Text>
             <Text style={styles.frigorias}>Frigorías: {item.Frigorias}</Text>
             <View style={styles.actions}>
-              <Button title="Editar" onPress={() => openModal(item)} />
-              <Button title="Eliminar" onPress={() => deleteAire(item.idAires, fetchData)} />
+              <Button title="Editar" onPress={() => openModal(item)} style={styles.editar} />
+              <Button title="Eliminar" onPress={() => deleteAire(item.idAires, fetchData)} style={styles.eliminar} />
             </View>
           </View>
         )}
@@ -125,7 +125,10 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   buttonContainer: {
-    marginBottom: 20,
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '180%',
   },
   item: {
     backgroundColor: '#ffffff',
@@ -134,7 +137,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
+    shadowOpacity: 0.4,
     shadowRadius: 5,
     elevation: 3,
   },
@@ -147,11 +150,10 @@ const styles = StyleSheet.create({
     color: '#555',
   },
   actions: {
+    flex: 1,
     flexDirection: 'row',
     justifyContent: 'flex-end',
-    borderColor: '#ffffff',
-    borderRadius: 50,
-    marginTop: 10,
+    alignItems: 'center',
   },
   loadingContainer: {
     flex: 1,
@@ -187,6 +189,23 @@ const styles = StyleSheet.create({
   modalButtons: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+  },
+  editar: {
+    flex: 1,
+    marginRight: 5,
+    borderWidth: 10,
+    borderColor: '#000',
+  },
+  eliminar: {
+    flex: 1,
+    marginLeft: 5,
+    borderWidth: 10,
+    borderColor: '#000',
+  },
+  agregar: {
+    flex: 1,
+    borderWidth: 10,
+    borderColor: '#000',
   },
 });
 
