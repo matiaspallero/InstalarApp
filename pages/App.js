@@ -1,6 +1,9 @@
+// App.js
 import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, StyleSheet, ActivityIndicator, Button, Dimensions, Modal, TextInput } from 'react-native';
 import { saveAire, deleteAire } from '../componentes/botones'; // Importar las funciones desde botones.js
+import { StatusBar } from 'react-native-web';
+
 
 const App = () => {
   const [aires, setAires] = useState([]); // Estado para almacenar los datos de la tabla
@@ -14,13 +17,14 @@ const App = () => {
     try {
       const response = await fetch('http://192.168.1.49:5000/aires');
       const data = await response.json();
-      setAires(data); // Guardar los datos en el estado
-      setLoading(false); // Desactivar el indicador de carga
+      setAires(data);
+      setLoading(false);
     } catch (error) {
       console.error('Error al obtener datos:', error);
-      setLoading(false); // Desactivar el indicador de carga en caso de error
+      setLoading(false);
     }
   };
+  
 
   // Ejecutar fetchData cuando el componente se monta
   useEffect(() => {
@@ -29,8 +33,17 @@ const App = () => {
 
   // Función para abrir el modal de agregar/editar
   const openModal = (aire = null) => {
-    setCurrentAire(aire);
-    setFormData(aire ? { Marca: aire.Marca, Frigorias: aire.Frigorias } : { Marca: '', Frigorias: '' });
+    if (aire) {
+      console.log('Editando aire:', aire); // Para debugging
+      setCurrentAire(aire);
+      setFormData({
+        Marca: aire.Marca || '',
+        Frigorias: aire.Frigorias ? aire.Frigorias.toString() : ''
+      });
+    } else {
+      setCurrentAire(null);
+      setFormData({ Marca: '', Frigorias: '' });
+    }
     setModalVisible(true);
   };
 
@@ -43,8 +56,17 @@ const App = () => {
 
   // Función para manejar cambios en el formulario
   const handleInputChange = (name, value) => {
-    setFormData({ ...formData, [name]: value });
+    console.log(`Cambiando ${name} a:`, value); // Para debugging
+    setFormData(prevData => ({
+      ...prevData,
+      [name]: value
+    }));
   };
+
+  const handleSave = () => {
+    saveAire(currentAire, formData, fetchData, closeModal);
+  };
+  
 
   // Mostrar un indicador de carga mientras se obtienen los datos
   if (loading) {
@@ -59,9 +81,10 @@ const App = () => {
   // Renderizar la lista de datos
   return (
     <View style={styles.container}>
+      <StatusBar style="dark" />
       <Text style={styles.title}>Tabla de Aires Acondicionados</Text>
       <View style={styles.buttonContainer}>
-        <Button title="Agregar Aire" onPress={() => openModal()} style={styles.agregar} />
+        <Button title="Agregar Aire" onPress={() => openModal()} />
       </View>
       <FlatList
         data={aires}
@@ -71,8 +94,8 @@ const App = () => {
             <Text style={styles.marca}>Marca: {item.Marca}</Text>
             <Text style={styles.frigorias}>Frigorías: {item.Frigorias}</Text>
             <View style={styles.actions}>
-              <Button title="Editar" onPress={() => openModal(item)} style={styles.editar} />
-              <Button title="Eliminar" onPress={() => deleteAire(item.idAires, fetchData)} style={styles.eliminar} />
+              <Button title="Editar" onPress={() => openModal(item)} />
+              <Button title="Eliminar" onPress={() => deleteAire(item.idAires, fetchData)} />
             </View>
           </View>
         )}
@@ -82,7 +105,9 @@ const App = () => {
       <Modal visible={modalVisible} animationType="slide" transparent={true}>
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>{currentAire ? 'Editar Aire' : 'Agregar Aire'}</Text>
+            <Text style={styles.modalTitle}>
+              {currentAire ? 'Editar Aire' : 'Agregar Aire'}
+            </Text>
             <TextInput
               style={styles.input}
               placeholder="Marca"
@@ -92,7 +117,7 @@ const App = () => {
             <TextInput
               style={styles.input}
               placeholder="Frigorías"
-              value={formData.Frigorias.toString()}
+              value={formData.Frigorias}
               onChangeText={(text) => {
                 // Solo permitir números
                 const numericValue = text.replace(/[^0-9]/g, '');
@@ -102,7 +127,7 @@ const App = () => {
             />
             <View style={styles.modalButtons}>
               <Button title="Cancelar" onPress={closeModal} />
-              <Button title="Guardar" onPress={() => saveAire(currentAire, formData, fetchData, closeModal)} />
+              <Button title="Guardar" onPress={handleSave} />
             </View>
           </View>
         </View>
@@ -111,7 +136,7 @@ const App = () => {
   );
 };
 
-// Estilos (los mismos que antes)
+// Estilos de la aplicación
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -125,10 +150,9 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   buttonContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: '180%',
+    marginBottom: 20,
+    paddingVertical: 10,
+    backgroundColor: '#f5f5f5',
   },
   item: {
     backgroundColor: '#ffffff',
@@ -150,10 +174,10 @@ const styles = StyleSheet.create({
     color: '#555',
   },
   actions: {
-    flex: 1,
     flexDirection: 'row',
     justifyContent: 'flex-end',
-    alignItems: 'center',
+    marginTop: 10,
+    gap: 10,
   },
   loadingContainer: {
     flex: 1,
@@ -189,24 +213,8 @@ const styles = StyleSheet.create({
   modalButtons: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-  },
-  editar: {
-    flex: 1,
-    marginRight: 5,
-    borderWidth: 10,
-    borderColor: '#000',
-  },
-  eliminar: {
-    flex: 1,
-    marginLeft: 5,
-    borderWidth: 10,
-    borderColor: '#000',
-  },
-  agregar: {
-    flex: 1,
-    borderWidth: 10,
-    borderColor: '#000',
-  },
+    gap: 10,
+  }
 });
 
 export default App;

@@ -40,6 +40,30 @@ app.post('/aires', async (req, res) => {
   }
 });
 
+app.put('/aires/:id', async (req, res) => {
+  const { id } = req.params;
+  const { Marca, Frigorias } = req.body;
+
+  try {
+    console.log('Actualizando aire:', { id, Marca, Frigorias });
+    
+    if (!Marca || !Frigorias) {
+      return res.status(400).json({ error: 'Marca y Frigorías son requeridas' });
+    }
+
+    const resultado = await tablas.actualizarAire(id, Marca, Frigorias);
+    console.log('Resultado de la actualización:', resultado);
+    
+    res.json(resultado);
+  } catch (error) {
+    console.error('Error en la ruta PUT:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+const tablas = require('./componentes/tablas'); // Asegúrate de que la ruta es correcta
+
+
 // Iniciar el servidor
 const PORT = 5000;
 app.listen(PORT, () => {

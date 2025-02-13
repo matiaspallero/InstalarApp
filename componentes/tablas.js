@@ -1,4 +1,6 @@
 // tablas.js
+console.log("tablas.js cargado correctamente");
+
 
 const mysql = require('mysql2');
 
