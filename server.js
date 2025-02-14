@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
-const { obtenerAires, insertarAire } = require('./componentes/tablas');
+const { obtenerAires, insertarAire, eliminarAire } = require('./componentes/tablas');
+
 
 const app = express();
 app.use(cors());
@@ -58,6 +59,17 @@ app.put('/aires/:id', async (req, res) => {
   } catch (error) {
     console.error('Error en la ruta PUT:', error);
     res.status(500).json({ error: error.message });
+  }
+});
+
+app.delete('/aires/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const result = await eliminarAire(id); // Usar la función importada
+    res.status(200).json({ message: 'Aire eliminado exitosamente', result });
+  } catch (error) {
+    console.error('Error al eliminar el aire:', error);
+    res.status(500).json({ error: 'Error al eliminar el aire' });
   }
 });
 

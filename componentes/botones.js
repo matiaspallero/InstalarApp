@@ -14,11 +14,6 @@ export const saveAire = async (currentAire, formData, fetchData, closeModal) => 
       : 'http://192.168.1.49:5000/aires';
 
     const method = currentAire ? 'PUT' : 'POST';
-    console.log(`Enviando petición ${method} a:`, url);
-    console.log('Datos a enviar:', {
-      Marca: formData.Marca,
-      Frigorias: parseInt(formData.Frigorias)
-    });
 
     const response = await fetch(url, {
       method: method,
@@ -51,17 +46,21 @@ export const saveAire = async (currentAire, formData, fetchData, closeModal) => 
 // Función para eliminar un aire
 export const deleteAire = async (id, fetchData) => {
   try {
-    // Envía una solicitud DELETE al backend
-    const response = await fetch(`http://192.168.1.49:5000/aires/${id}`, {
+    const url = `http://192.168.1.49:5000/aires/${id}`;
+    console.log("URL de eliminación:", url); // Depuración
+
+    const response = await fetch(url, {
       method: 'DELETE',
     });
 
     if (!response.ok) {
+      const errorText = await response.text();
+      console.error("Error del servidor:", errorText); // Depuración
       throw new Error('Error al eliminar el aire');
     }
 
     alert('Aire eliminado exitosamente');
-    await fetchData();
+    await fetchData(); // Actualiza la lista después de eliminar
   } catch (error) {
     console.error('Error al eliminar el aire:', error);
     alert('Error al eliminar el aire');

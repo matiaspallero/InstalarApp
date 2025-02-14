@@ -1,9 +1,8 @@
-// App.js
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, StyleSheet, ActivityIndicator, Button, Dimensions, Modal, TextInput } from 'react-native';
+import { View, Text, FlatList, StyleSheet, ActivityIndicator, Button, Dimensions, Modal, TextInput, ScrollView } from 'react-native';
 import { saveAire, deleteAire } from '../componentes/botones'; // Importar las funciones desde botones.js
-import { StatusBar } from 'react-native-web';
-
+import { SafeAreaView, StatusBar } from 'react-native';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 const App = () => {
   const [aires, setAires] = useState([]); // Estado para almacenar los datos de la tabla
@@ -24,9 +23,7 @@ const App = () => {
       setLoading(false);
     }
   };
-  
 
-  // Ejecutar fetchData cuando el componente se monta
   useEffect(() => {
     fetchData();
   }, []);
@@ -80,59 +77,60 @@ const App = () => {
 
   // Renderizar la lista de datos
   return (
-    <View style={styles.container}>
-      <StatusBar style="dark" />
-      <Text style={styles.title}>Tabla de Aires Acondicionados</Text>
-      <View style={styles.buttonContainer}>
-        <Button title="Agregar Aire" onPress={() => openModal()} />
-      </View>
-      <FlatList
-        data={aires}
-        keyExtractor={(item) => item.idAires.toString()}
-        renderItem={({ item }) => (
-          <View style={styles.item}>
-            <Text style={styles.marca}>Marca: {item.Marca}</Text>
-            <Text style={styles.frigorias}>Frigorías: {item.Frigorias}</Text>
-            <View style={styles.actions}>
-              <Button title="Editar" onPress={() => openModal(item)} />
-              <Button title="Eliminar" onPress={() => deleteAire(item.idAires, fetchData)} />
-            </View>
-          </View>
-        )}
-      />
-
-      {/* Modal para agregar/editar aires */}
-      <Modal visible={modalVisible} animationType="slide" transparent={true}>
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>
-              {currentAire ? 'Editar Aire' : 'Agregar Aire'}
-            </Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Marca"
-              value={formData.Marca}
-              onChangeText={(text) => handleInputChange('Marca', text)}
-            />
-            <TextInput
-              style={styles.input}
-              placeholder="Frigorías"
-              value={formData.Frigorias}
-              onChangeText={(text) => {
-                // Solo permitir números
-                const numericValue = text.replace(/[^0-9]/g, '');
-                handleInputChange('Frigorias', numericValue);
-              }}
-              keyboardType="numeric"
-            />
-            <View style={styles.modalButtons}>
-              <Button title="Cancelar" onPress={closeModal} />
-              <Button title="Guardar" onPress={handleSave} />
-            </View>
-          </View>
+    <SafeAreaProvider>
+      <SafeAreaView style={styles.container}>
+        <StatusBar style="auto" />
+        <Text style={styles.title}>Tabla de Aires Acondicionados</Text>
+        <View style={styles.buttonContainer}>
+          <Button title="Agregar Aire" onPress={() => openModal()} />
         </View>
-      </Modal>
-    </View>
+        <FlatList
+          data={aires}
+          keyExtractor={(item) => item.idAires.toString()}
+          renderItem={({ item }) => (
+            <View style={styles.item}>
+              <Text style={styles.marca}>Marca: {item.Marca}</Text>
+              <Text style={styles.frigorias}>Frigorías: {item.Frigorias}</Text>
+              <View style={styles.actions}>
+                <Button title="Editar" onPress={() => openModal(item)} />
+                <Button title="Eliminar" onPress={() => deleteAire(item.idAires, fetchData)} />
+              </View>
+            </View>
+          )}
+          contentContainerStyle={styles.flatListContent}
+        />
+
+        <Modal visible={modalVisible} animationType="slide" transparent={true}>
+          <View style={styles.modalContainer}>
+            <View style={styles.modalContent}>
+              <Text style={styles.modalTitle}>
+                {currentAire ? 'Editar Aire' : 'Agregar Aire'}
+              </Text>
+              <TextInput
+                style={styles.input}
+                placeholder="Marca"
+                value={formData.Marca}
+                onChangeText={(text) => handleInputChange('Marca', text)}
+              />
+              <TextInput
+                style={styles.input}
+                placeholder="Frigorías"
+                value={formData.Frigorias}
+                onChangeText={(text) => {
+                  const numericValue = text.replace(/[^0-9]/g, '');
+                  handleInputChange('Frigorias', numericValue);
+                }}
+                keyboardType="numeric"
+              />
+              <View style={styles.modalButtons}>
+                <Button title="Cancelar" onPress={closeModal} />
+                <Button title="Guardar" onPress={handleSave} />
+              </View>
+            </View>
+          </View>
+        </Modal>
+      </SafeAreaView>
+    </SafeAreaProvider>
   );
 };
 
@@ -214,7 +212,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     gap: 10,
-  }
+  },
+  flatListContent: {
+    flexGrow: 1,
+  },
 });
 
 export default App;

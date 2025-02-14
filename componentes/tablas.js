@@ -81,15 +81,19 @@ const actualizarAire = (idAires, Marca, Frigorias) => {
 // Función para eliminar un registro de la tabla Aires
 const eliminarAire = (idAires) => {
   return new Promise((resolve, reject) => {
+    console.log("ID del aire a eliminar:", idAires); // Depuración
+
     connection.query(
       'DELETE FROM Aires WHERE idAires = ?',
       [idAires],
       (err, results) => {
         if (err) {
+          console.error("Error en la consulta SQL:", err); // Depuración
           reject(err);
           return;
         }
-        resolve(results); // Devuelve los resultados de la eliminación
+        console.log("Resultados de la eliminación:", results); // Depuración
+        resolve(results);
       }
     );
   });
