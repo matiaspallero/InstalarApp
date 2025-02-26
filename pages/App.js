@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, StyleSheet, ActivityIndicator, Button, Dimensions, Modal, TextInput, ScrollView } from 'react-native';
 import { saveAire, deleteAire } from '../componentes/botones'; // Importar las funciones desde botones.js
-import { SafeAreaView, StatusBar } from 'react-native';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { StatusBar } from 'react-native';
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 
 const App = () => {
   const [aires, setAires] = useState([]); // Estado para almacenar los datos de la tabla
