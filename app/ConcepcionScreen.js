@@ -26,6 +26,8 @@ const AppConcepcion = () => {
   const [currentAire, setCurrentAire] = useState(null); // Estado para almacenar el aire que se está editando
   const [formData, setFormData] = useState({ Marca: "", Frigorias: "", Ubicacion: "" }); // Formulario
   const ENDPOINT_PATH = "concepcion"; // Endpoint específico para esta pantalla
+  const [infoModalVisible, setInfoModalVisible] = useState(false); // Estado para el modal de información
+  const [selectedAireDetails, setSelectedAireDetails] = useState(null); // Estado para los detalles del aire seleccionado
 
   // Función para obtener los datos del backend
   const fetchData = async () => {
@@ -53,6 +55,7 @@ const AppConcepcion = () => {
         Marca: concepcion.Marca || "",
         Frigorias: concepcion.Frigorias ? concepcion.Frigorias.toString() : "",
         Ubicacion: concepcion.Ubicacion || "",
+        Servicio: concepcion.Servicio || "",
         // id: concepcion.idConcepcion // El ID se manejará en handleSave al construir el objeto
       });
     } else {
@@ -67,6 +70,18 @@ const AppConcepcion = () => {
     setModalVisible(false);
     setCurrentAire(null);
     setFormData({ Marca: "", Frigorias: "", Ubicacion: "" });
+  };
+
+    // Función para abrir el modal de información
+  const openInfoModal = (concepcion) => {
+    setSelectedAireDetails(concepcion);
+    setInfoModalVisible(true);
+  };
+
+  // Función para cerrar el modal de información
+  const closeInfoModal = () => {
+    setInfoModalVisible(false);
+    setSelectedAireDetails(null);
   };
 
   // Función para manejar cambios en el formulario
@@ -106,7 +121,7 @@ const AppConcepcion = () => {
         <StatusBar style="auto" />
         <Text style={styles.title}>Tabla de Aires Acondicionados</Text>
         <View style={styles.buttonContainer}>
-          <Button title="Agregar Aire" onPress={() => openModal()} />
+          <Button title="Agregar Aire" onPress={() => openModal()} activeOpacity={0.5}/>
         </View>
         <FlatList
           data={airesConcepcion}
@@ -118,10 +133,12 @@ const AppConcepcion = () => {
               <Text style={styles.frigorias}>Frigorías: {item.Frigorias}</Text>
               <Text style={styles.ubicacion}>Ubicación: {item.Ubicacion}</Text>
               <View style={styles.actions}>
-                <Button title="Editar" onPress={() => openModal(item)} />
+                <Button title="Info" onPress={() => openInfoModal(item)} activeOpacity={0.5}>Info</Button>
+                <Button title="Editar" onPress={() => openModal(item)} activeOpacity={0.5}/>
                 <Button
                   title="Eliminar"
                   onPress={() => handleDelete(item.idConcepcion)} // Usar idConcepcion y la nueva función
+                  activeOpacity={0.5}
                 />
               </View>
             </View>
@@ -164,6 +181,26 @@ const AppConcepcion = () => {
             </View>
           </View>
         </Modal>
+
+        {/* Modal para mostrar detalles del Aire */}
+        {selectedAireDetails && (
+          <Modal visible={infoModalVisible} animationType="fade" transparent={true} onRequestClose={closeInfoModal}>
+            <View style={styles.modalContainer}>
+              <View style={styles.modalContent}>
+                <Text style={styles.modalTitle}>Detalles del Aire</Text>
+                <Text style={styles.detailText}><Text style={styles.detailLabel}>Marca:</Text> {selectedAireDetails.Marca}</Text>
+                <Text style={styles.detailText}><Text style={styles.detailLabel}>Frigorías:</Text> {selectedAireDetails.Frigorias}</Text>
+                <Text style={styles.detailText}><Text style={styles.detailLabel}>Ubicación:</Text> {selectedAireDetails.Ubicacion}</Text>
+                <Text style={styles.detailText}><Text style={styles.detailLabel}>Servicio</Text> {selectedAireDetails.Servicio}</Text>
+                <View style={styles.modalButtons}>
+                  <Button title="Generar QR" onPress={closeInfoModal} />
+                  <Button title="Cerrar" onPress={closeInfoModal} />
+                </View>
+              </View>
+            </View>
+          </Modal>
+        )}
+
       </SafeAreaView>
     </SafeAreaProvider>
   );
@@ -257,6 +294,13 @@ const styles = StyleSheet.create({
   },
   flatListContent: {
     flexGrow: 1,
+  },
+  detailText: {
+    fontSize: 16,
+    marginBottom: 10,
+  },
+  detailLabel: {
+    fontWeight: 'bold',
   },
 });
 

@@ -5,6 +5,8 @@ import HomeScreen from './inicio'; // Corregido: Ruta a la pantalla de inicio
 import AppMetro from './App'; // Añadido: Importar la pantalla de gestión de aires
 import AppMonteros from './MonterosScreen';
 import AppConcepcion from './ConcepcionScreen';
+import AppInventario from './InventarioScreen';
+
 
 const Stack = createStackNavigator();
 
@@ -16,6 +18,7 @@ export default function App() {
        <Stack.Screen name="App" component={AppMetro} options={{ title: 'Gestión de Metro' }} />
        <Stack.Screen name="AppMonteros" component={AppMonteros} options={{ title: 'Gestión de Monteros' }} />
        <Stack.Screen name="AppConcepcion" component={AppConcepcion} options={{ title: 'Gestión de Concepcion' }} />
+       <Stack.Screen name="AppInventario" component={AppInventario} options={{ title: 'Inventario' }} />
      </Stack.Navigator>
    </NavigationContainer>
   );

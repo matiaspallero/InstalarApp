@@ -1,10 +1,12 @@
 import React from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, StatusBar, ScrollView } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+import { Dimensions } from 'react-native';
+const { width } = Dimensions.get('window');
 
 const HomeScreen = ({ navigation }) => {
   return (
-    <SafeAreaProvider style={styles.container}>
+    <SafeAreaProvider>
       <SafeAreaView style={styles.container}>
         <StatusBar style="auto" />
             <ScrollView contentContainerStyle={styles.scrollContainer}>
@@ -13,27 +15,27 @@ const HomeScreen = ({ navigation }) => {
                   <Text style={styles.headerText}>Bienvenidos😀</Text>
               </View>
               <View style={styles.container2}>
-                  <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('App')}>
+                  <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('App')} activeOpacity={0.5}>
                       <Image source={require('../assets/edificio2.png')} style={styles.imgbutton} />
                       <Text style={styles.buttonText}>METRO</Text>
                   </TouchableOpacity>
-                  <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('AppMonteros')}>
+                  <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('AppMonteros')} activeOpacity={0.5}>
                       <Image source={require('../assets/edificio2.png')} style={styles.imgbutton} />
                       <Text style={styles.buttonText}>MONTEROS</Text>
                   </TouchableOpacity>
-                  <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('AppConcepcion')}>
+                  <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('AppConcepcion')} activeOpacity={0.5}>
                       <Image source={require('../assets/edificio2.png')} style={styles.imgbutton} />
                       <Text style={styles.buttonText}>CONCEPCION</Text>
                   </TouchableOpacity>
-                  <TouchableOpacity style={styles.button}>
+                  <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('AppInventario')} activeOpacity={0.5}>
                       <Image source={require('../assets/inventario.png')} style={styles.imgbutton} />
                       <Text style={styles.buttonText}>INVENTARIO</Text>
                   </TouchableOpacity>
-                  <TouchableOpacity style={styles.button}>
+                  <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('')} activeOpacity={0.5}>
                       <Image source={require('../assets/otros.png')} style={styles.imgbutton} />
                       <Text style={styles.buttonText}>OTROS</Text>
                   </TouchableOpacity>
-                  <TouchableOpacity style={styles.button}>
+                  <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('')} activeOpacity={0.5}>
                       <Image source={require('../assets/pdf.png')} style={styles.imgbutton} />
                       <Text style={styles.buttonText}>PDF'S</Text>
                   </TouchableOpacity>
@@ -47,13 +49,14 @@ const HomeScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 10,
-    backgroundColor: '#fff',
+    padding: 16, // Un poco más de padding
+    backgroundColor: '#f8f9fa', // Fondo ligeramente gris
   },
   header: {
     paddingHorizontal: 20,
     alignItems: 'center',
-    marginBottom: 50,
+    marginBottom: 30, // Reducir un poco el margen inferior
+    marginTop: 20, // Añadir margen superior
   },
   imagen: {
     display: 'flex',
@@ -62,47 +65,53 @@ const styles = StyleSheet.create({
     height: 100,
   },
   headerText: {
-    fontSize: 24,
+    fontSize: 28, // Tamaño un poco mayor
     fontFamily: 'Arial',
     fontWeight: 'bold',
+    color: '#2c3e50', // Color más profesional
+    marginTop: 15, // Espacio después de la imagen
   },
   container2: {
+    flexDirection: 'row', // Organizar hijos en fila
+    flexWrap: 'wrap',     // Permitir que los elementos pasen a la siguiente línea
     justifyContent: 'center',
-    display: 'grid',
-    gridTemplateColumns: 'repeat(2, 1fr)',
     width: '100%',
     maxWidth: 500,
-    gridAutoRows: '50%',
     marginLeft: 'auto',
     marginRight: 'auto',
-    gap: 10,
     padding: 20,
   },
   button: {
-    flexDirection: 'row',
+    flexDirection: 'column', // Cambiar a columna para móvil (icono arriba, texto abajo)
     justifyContent: 'center',
     alignItems: 'center',
-    marginVertical: 10,
-    borderColor: 'blue',
-    borderWidth: 1.5,
-    padding: 10,
-    borderRadius: 5,
-    backgroundColor: '#6495ED',
-  },
+    marginVertical: 8,
+    marginHorizontal: 5,
+    borderColor: '#3498db',
+    borderWidth: 1,
+    padding: 15,
+    borderRadius: 10, // Bordes más redondeados
+    backgroundColor: '#fff',
+    width: width > 500 ? '40%' : '45%', // 3 columnas en pantallas anchas, 2 en móviles
+    minHeight: 120, // Altura mínima para consistencia
+    shadowColor: '#000', // Sombra para profundidad
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3, // Para Android
+},
   buttonText: {
-    marginLeft: 10,
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-  icon: {
-    width: 24,
-    height: 24,
-  },
+    marginTop: 10, // Espacio entre icono y texto
+    fontSize: 16,
+    fontWeight: '600', // Semibold en lugar de bold
+    color: '#2c3e50',
+},
   imgbutton: {
-    display: 'flex',
-    justifyContent: 'center',
-  },
-scrollContainer: {
+    width: 40, // Tamaño fijo para iconos
+    height: 40,
+    resizeMode: 'contain',
+},
+  scrollContainer: {
     flexGrow: 1,
 },
 });

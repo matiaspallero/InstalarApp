@@ -34,16 +34,16 @@ const obtenerAiresC = () => {
 };
 
 // Función para insertar un nuevo registro en la tabla Aires
-const insertarAireC = (Marca, Frigorias, Ubicacion) => {
+const insertarAireC = (Marca, Frigorias, Ubicacion, Servicio) => {
   return new Promise((resolve, reject) => {
-    if (!Marca || !Frigorias || !Ubicacion) { // Considera validar Ubicacion si es mandatorio
+    if (!Marca || !Frigorias || !Ubicacion || !Servicio) { // Considera validar Ubicacion si es mandatorio
       reject(new Error('Marca, Frigorías y Ubicación son requeridas.'));
       return;
     }
 
     connection.query(
-      'INSERT INTO concepcion (Marca, Frigorias, Ubicacion) VALUES (?, ?, ?)',
-      [Marca, parseInt(Frigorias), Ubicacion],
+      'INSERT INTO concepcion (Marca, Frigorias, Ubicacion, Servicio) VALUES (?, ?, ?, ?)',
+      [Marca, parseInt(Frigorias), Ubicacion, Servicio],
       (err, results) => {
         if (err) {
           console.error('Error en la inserción:', err);
@@ -54,7 +54,8 @@ const insertarAireC = (Marca, Frigorias, Ubicacion) => {
           id: results.insertId,
           Marca,
           Frigorias: parseInt(Frigorias),
-          Ubicacion
+          Ubicacion,
+          Servicio
         });
       }
     );
@@ -62,12 +63,12 @@ const insertarAireC = (Marca, Frigorias, Ubicacion) => {
 };
 
 // Función para actualizar un registro en la tabla Aires
-const actualizarAireC = (idConcepcion, Marca, Frigorias, Ubicacion) => {
+const actualizarAireC = (idConcepcion, Marca, Frigorias, Ubicacion, Servicio) => {
   return new Promise((resolve, reject) => {
     // Considera validar los campos aquí también
     connection.query(
-      'UPDATE concepcion SET Marca = ?, Frigorias = ?, Ubicacion = ? WHERE idConcepcion = ?',
-      [Marca, Frigorias, Ubicacion, idConcepcion],
+      'UPDATE concepcion SET Marca = ?, Frigorias = ?, Ubicacion = ?, Servicio = ? WHERE idConcepcion = ?',
+      [Marca, Frigorias, Ubicacion, Servicio, idConcepcion],
       (err, results) => {
         if (err) {
           reject(err);

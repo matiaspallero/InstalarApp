@@ -19,20 +19,22 @@ import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 const SERVER_IP = '192.168.1.38'; // Ejemplo: '192.168.1.105'
 const API_BASE_URL = `http://${SERVER_IP}:5000`;
 
-const App = () => {
-  const [airesMetro, setAiresMetro] = useState([]); // Estado para los datos de la tabla metro
+const AppMonteros = () => {
+  const [airesMonteros, setAiresMonteros] = useState([]); // Estado para los datos de la tabla monteros
   const [loading, setLoading] = useState(true); // Estado para manejar la carga
   const [modalVisible, setModalVisible] = useState(false); // Estado para controlar la visibilidad del modal
   const [currentAire, setCurrentAire] = useState(null); // Estado para almacenar el aire que se está editando
   const [formData, setFormData] = useState({ Marca: "", Frigorias: "", Ubicacion: "" }); // Formulario
-  const ENDPOINT_PATH = "metro"; // Endpoint específico para esta pantalla
+  const ENDPOINT_PATH = "monteros"; // Endpoint específico para esta pantalla
+  const [infoModalVisible, setInfoModalVisible] = useState(false); // Estado para el modal de información
+  const [selectedAireDetails, setSelectedAireDetails] = useState(null); // Estado para los detalles del aire seleccionado
 
   // Función para obtener los datos del backend
   const fetchData = async () => {
     try {
       const response = await fetch(`${API_BASE_URL}/${ENDPOINT_PATH}`); // Usar el endpoint correcto
       const data = await response.json();
-      setAiresMetro(data);
+      setAiresMonteros(data);
       setLoading(false);
     } catch (error) {
       console.error("Error al obtener datos:", error);
@@ -45,15 +47,16 @@ const App = () => {
   }, []);
 
   // Función para abrir el modal de agregar/editar
-  const openModal = (metro = null) => {
-    if (metro) {
-      console.log(`Editando aire para ${ENDPOINT_PATH}:`, metro);
-      setCurrentAire(metro);
+  const openModal = (monteros = null) => {
+    if (monteros) {
+      console.log(`Editando aire para ${ENDPOINT_PATH}:`, monteros);
+      setCurrentAire(monteros);
       setFormData({
-        Marca: metro.Marca || "",
-        Frigorias: metro.Frigorias ? metro.Frigorias.toString() : "",
-        Ubicacion: metro.Ubicacion || "",
-        // id: metro.idMetro // El ID se manejará en handleSave al construir el objeto
+        Marca: monteros.Marca || "",
+        Frigorias: monteros.Frigorias ? monteros.Frigorias.toString() : "",
+        Ubicacion: monteros.Ubicacion || "",
+        Servicio: monteros.Servicio || "",
+        // id: monteros.idMonteros // El ID se manejará en handleSave al construir el objeto
       });
     } else {
       setCurrentAire(null);
@@ -69,6 +72,18 @@ const App = () => {
     setFormData({ Marca: "", Frigorias: "", Ubicacion: "" });
   };
 
+    // Función para abrir el modal de información
+  const openInfoModal = (monteros) => {
+    setSelectedAireDetails(monteros);
+    setInfoModalVisible(true);
+  };
+
+  // Función para cerrar el modal de información
+  const closeInfoModal = () => {
+    setInfoModalVisible(false);
+    setSelectedAireDetails(null);
+  };
+
   // Función para manejar cambios en el formulario
   const handleInputChange = (name, value) => {
     console.log(`Cambiando ${name} a:`, value); // Para debugging
@@ -80,8 +95,8 @@ const App = () => {
 
   const handleSave = () => {
     // Preparamos el objeto currentAire para saveAire, asegurando que tenga el ID correcto si es una edición.
-    // Asumimos que la API para /metro devuelve 'idMetro' como identificador.
-    const aireParaGuardar = currentAire ? { ...formData, id: currentAire.idMetro } : null;
+    // Asumimos que la API para /monteros devuelve 'idMonteros' como identificador.
+    const aireParaGuardar = currentAire ? { ...formData, id: currentAire.idMonteros } : null;
     saveAire(ENDPOINT_PATH, aireParaGuardar, formData, fetchData, closeModal);
   };
 
@@ -106,22 +121,24 @@ const App = () => {
         <StatusBar style="auto" />
         <Text style={styles.title}>Tabla de Aires Acondicionados</Text>
         <View style={styles.buttonContainer}>
-          <Button title="Agregar Aire" onPress={() => openModal()} />
+          <Button title="Agregar Aire" onPress={() => openModal()} activeOpacity={0.5}/>
         </View>
         <FlatList
-          data={airesMetro}
-          // Asumimos que la API para /metro devuelve objetos con idMetro
-          keyExtractor={(item) => item.idMetro.toString()}
+          data={airesMonteros}
+          // Asumimos que la API para /monteros devuelve objetos con idMonteros
+          keyExtractor={(item) => item.idMonteros.toString()}
           renderItem={({ item }) => (
             <View style={styles.item}>
               <Text style={styles.marca}>Marca: {item.Marca}</Text>
               <Text style={styles.frigorias}>Frigorías: {item.Frigorias}</Text>
               <Text style={styles.ubicacion}>Ubicación: {item.Ubicacion}</Text>
               <View style={styles.actions}>
+                <Button title="Info" onPress={() => openInfoModal(item)} activeOpacity={0.5}>Info</Button>
                 <Button title="Editar" onPress={() => openModal(item)} />
                 <Button
                   title="Eliminar"
-                  onPress={() => handleDelete(item.idMetro)} // Usar idMetro y la nueva función
+                  onPress={() => handleDelete(item.idMonteros)} // Usar idMonteros y la nueva función
+                  activeOpacity={0.5}
                 />
               </View>
             </View>
@@ -164,6 +181,26 @@ const App = () => {
             </View>
           </View>
         </Modal>
+
+        {/* Modal para mostrar detalles del Aire */}
+        {selectedAireDetails && (
+          <Modal visible={infoModalVisible} animationType="fade" transparent={true} onRequestClose={closeInfoModal}>
+            <View style={styles.modalContainer}>
+              <View style={styles.modalContent}>
+                <Text style={styles.modalTitle}>Detalles del Aire</Text>
+                <Text style={styles.detailText}><Text style={styles.detailLabel}>Marca:</Text> {selectedAireDetails.Marca}</Text>
+                <Text style={styles.detailText}><Text style={styles.detailLabel}>Frigorías:</Text> {selectedAireDetails.Frigorias}</Text>
+                <Text style={styles.detailText}><Text style={styles.detailLabel}>Ubicación:</Text> {selectedAireDetails.Ubicacion}</Text>
+                <Text style={styles.detailText}><Text style={styles.detailLabel}>Servicio:</Text> {selectedAireDetails.Servicio}</Text>
+                <View style={styles.modalButtons}>
+                  <Button title="Generar QR" onPress={closeInfoModal} />
+                  <Button title="Cerrar" onPress={closeInfoModal} />
+                </View>
+              </View>
+            </View>
+          </Modal>
+        )}
+
       </SafeAreaView>
     </SafeAreaProvider>
   );
@@ -258,6 +295,13 @@ const styles = StyleSheet.create({
   flatListContent: {
     flexGrow: 1,
   },
+  detailText: {
+    fontSize: 16,
+    marginBottom: 10,
+  },
+  detailLabel: {
+    fontWeight: 'bold',
+  },
 });
 
-export default App;
+export default AppMonteros;
