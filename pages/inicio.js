@@ -17,11 +17,11 @@ const HomeScreen = ({ navigation }) => {
                       <Image source={require('../assets/edificio2.png')} style={styles.imgbutton} />
                       <Text style={styles.buttonText}>METRO</Text>
                   </TouchableOpacity>
-                  <TouchableOpacity style={styles.button}>
+                  <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('AppMonteros')}>
                       <Image source={require('../assets/edificio2.png')} style={styles.imgbutton} />
                       <Text style={styles.buttonText}>MONTEROS</Text>
                   </TouchableOpacity>
-                  <TouchableOpacity style={styles.button}>
+                  <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('AppConcepcion')}>
                       <Image source={require('../assets/edificio2.png')} style={styles.imgbutton} />
                       <Text style={styles.buttonText}>CONCEPCION</Text>
                   </TouchableOpacity>

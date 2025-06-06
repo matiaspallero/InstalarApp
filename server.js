@@ -1,16 +1,57 @@
 const express = require('express');
 const cors = require('cors');
 const { createProxyMiddleware } = require('http-proxy-middleware');
-const { obtenerAires, insertarAire, actualizarAire, eliminarAire } = require('./componentes/tablas');
+// Se importan las funciones específicas para la tabla 'metro' y se les da un alias
+const {
+  obtenerAiresMETRO: obtenerAiresMetro,
+  insertarAireMETRO: insertarAireMetro,
+  actualizarAireMETRO: actualizarAireMetro,
+  eliminarAireMETRO: eliminarAireMetro,
+} = require('./componentes/tablaMetro'); // Usar funciones de tablaMetro.js
+
+const {
+  obtenerAiresM: obtenerAiresMonteros,
+  insertarAireM: insertarAireMonteros,
+  actualizarAireM: actualizarAireMonteros,
+  eliminarAireM: eliminarAireMonteros
+} = require('./componentes/tablaMonteros'); // Usa funciones de tablaMonteros.js
+
+const {
+  obtenerAiresC: obtenerAiresConcepcion,
+  insertarAireC: insertarAireConcepcion,
+  actualizarAireC: actualizarAireConcepcion,
+  eliminarAireC: eliminarAireConcepcion
+} = require('./componentes/tablaConcepcion'); // Usa funciones de tablaConcepcion.js
+
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
 // Endpoint para obtener datos de la tabla Aires
-app.get('/aires', async (req, res) => {
+app.get('/metro', async (req, res) => {
   try {
-    const aires = await obtenerAires();
+    const aires = await obtenerAiresMetro(); // Usar la función de tablaMetro
+    res.json(aires);
+  } catch (error) {
+    console.error('Error al obtener datos:', error);
+    res.status(500).json({ message: 'Error en el servidor' });
+  }
+});
+
+app.get('/monteros', async (req, res) => {
+  try {
+    const aires = await obtenerAiresMonteros(); // Usar la función de tablaMonteros
+    res.json(aires);
+  } catch (error) {
+    console.error('Error al obtener datos:', error);
+    res.status(500).json({ message: 'Error en el servidor' });
+  }
+});
+
+app.get('/concepcion', async (req, res) => {
+  try {
+    const aires = await obtenerAiresConcepcion(); // Usar la función de tablaConcepcion
     res.json(aires);
   } catch (error) {
     console.error('Error al obtener datos:', error);
@@ -19,39 +60,83 @@ app.get('/aires', async (req, res) => {
 });
 
 // Endpoint para insertar datos en la tabla Aires
-app.post('/aires', async (req, res) => {
+app.post('/metro', async (req, res) => {
   try {
-    const { Marca, Frigorias } = req.body;
-    
+    const { Marca, Frigorias, Ubicacion } = req.body; // Incluir Ubicacion
+
     // Validaciones
-    if (!Marca || !Frigorias) {
+    if (!Marca || !Frigorias) { // Considerar validar Ubicacion si es mandatorio
       return res.status(400).json({
         message: 'La marca y las frigorías son requeridas'
       });
     }
 
-    const resultado = await insertarAire(Marca, Frigorias);
+    const resultado = await insertarAireMetro(Marca, Frigorias, Ubicacion); // Usar la función de tablaMetro
     res.status(201).json(resultado);
   } catch (error) {
     console.error('Error en el servidor:', error);
-    res.status(500).json({
+    res.status(500).json({ // Corregido para que coincida con el formato de error de PUT
       message: 'Error en el servidor',
       error: error.message
     });
   }
 });
 
-app.put('/aires/:id', async (req, res) => {
-  const { id } = req.params;
-  const { Marca, Frigorias } = req.body;
-
+app.post('/monteros', async (req, res) => {
   try {
-    if (!Marca || !Frigorias) {
-      return res.status(400).json({ error: 'Marca y Frigorías son requeridas' });
+    const { Marca, Frigorias, Ubicacion } = req.body; // Incluir Ubicacion
+
+    // Validaciones
+    if (!Marca || !Frigorias || !Ubicacion) { // Considerar validar Ubicacion si es mandatorio
+      return res.status(400).json({
+        message: 'La marca y las frigorías son requeridas'
+      });
     }
 
-    // Usar 'actualizarAire' directamente ya que está desestructurado
-    const resultado = await actualizarAire(id, Marca, Frigorias);
+    const resultado = await insertarAireMonteros(Marca, Frigorias, Ubicacion); // Usar la función de tablaMonteros
+    res.status(201).json(resultado);
+  } catch (error) {
+    console.error('Error en el servidor:', error);
+    res.status(500).json({ // Corregido para que coincida con el formato de error de PUT
+      message: 'Error en el servidor',
+      error: error.message
+    });
+  }
+});
+
+app.post('/concepcion', async (req, res) => {
+  try {
+    const { Marca, Frigorias, Ubicacion } = req.body; // Incluir Ubicacion
+
+    // Validaciones
+    if (!Marca || !Frigorias || !Ubicacion) { // Considerar validar Ubicacion si es mandatorio
+      return res.status(400).json({
+        message: 'La marca y las frigorías son requeridas'
+      });
+    }
+
+    const resultado = await insertarAireConcepcion(Marca, Frigorias, Ubicacion); // Usar la función de tablaConcepcion
+    res.status(201).json(resultado);
+  } catch (error) {
+    console.error('Error en el servidor:', error);
+    res.status(500).json({ // Corregido para que coincida con el formato de error de PUT
+      message: 'Error en el servidor',
+      error: error.message
+    });
+  }
+});
+
+app.put('/metro/:id', async (req, res) => {
+  const { id } = req.params;
+  const { Marca, Frigorias, Ubicacion } = req.body; // Incluir Ubicacion
+
+  try {
+    if (!Marca || !Frigorias || !Ubicacion) { // Considerar validar Ubicacion si es mandatorio
+      return res.status(400).json({ error: 'Marca, Frigorías y Ubicación son requeridas' });
+    }
+
+    // Usar la función de tablaMetro, el id es idMetro
+    const resultado = await actualizarAireMetro(id, Marca, Frigorias, Ubicacion);
     res.json(resultado);
   } catch (error) {
     console.error('Error en la ruta PUT:', error);
@@ -59,10 +144,68 @@ app.put('/aires/:id', async (req, res) => {
   }
 });
 
-app.delete('/aires/:id', async (req, res) => {
+app.put('/monteros/:id', async (req, res) => {
+  const { id } = req.params;
+  const { Marca, Frigorias, Ubicacion } = req.body; // Incluir Ubicacion
+
+  try {
+    if (!Marca || !Frigorias || !Ubicacion) { // Considerar validar Ubicacion si es mandatorio
+      return res.status(400).json({ error: 'Marca, Frigorías y Ubicación son requeridas' });
+    }
+
+    // Usar la función de tablaMonteros, el id es idMonteros
+    const resultado = await actualizarAireMonteros(id, Marca, Frigorias, Ubicacion);
+    res.json(resultado);
+  } catch (error) {
+    console.error('Error en la ruta PUT:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.put('/concepcion/:id', async (req, res) => {
+  const { id } = req.params;
+  const { Marca, Frigorias, Ubicacion } = req.body; // Incluir Ubicacion
+
+  try {
+    if (!Marca || !Frigorias || !Ubicacion) { // Considerar validar Ubicacion si es mandatorio
+      return res.status(400).json({ error: 'Marca, Frigorías y Ubicación son requeridas' });
+    }
+
+    // Usar la función de tablaConcepcion, el id es idConcepcion
+    const resultado = await actualizarAireConcepcion(id, Marca, Frigorias, Ubicacion);
+    res.json(resultado);
+  } catch (error) {
+    console.error('Error en la ruta PUT:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.delete('/metro/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    const result = await eliminarAire(id);
+    const result = await eliminarAireMetro(id); // Usar la función de tablaMetro, el id es idMetro
+    res.status(200).json({ message: 'Aire eliminado exitosamente', result });
+  } catch (error) {
+    console.error('Error al eliminar el aire:', error);
+    res.status(500).json({ error: 'Error al eliminar el aire' });
+  }
+});
+
+app.delete('/monteros/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const result = await eliminarAireMonteros(id); // Usar la función de tablaMonteros, el id es idMonteros
+    res.status(200).json({ message: 'Aire eliminado exitosamente', result });
+  } catch (error) {
+    console.error('Error al eliminar el aire:', error);
+    res.status(500).json({ error: 'Error al eliminar el aire' });
+  }
+});
+
+app.delete('/concepcion/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const result = await eliminarAireConcepcion(id); // Usar la función de tablaConcepcion, el id es idConcepcion
     res.status(200).json({ message: 'Aire eliminado exitosamente', result });
   } catch (error) {
     console.error('Error al eliminar el aire:', error);

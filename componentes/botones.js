@@ -1,18 +1,23 @@
 // botones.js
 
+// IMPORTANTE: Reemplaza 'TU_IP_LOCAL_AQUI' con la dirección IP de la computadora donde corre el servidor.
+const SERVER_IP = '192.168.1.38'; // Ejemplo: '192.168.1.105'
+const API_BASE_URL = `http://${SERVER_IP}:5000`;
+
 // Función para agregar o actualizar un aire
-export const saveAire = async (currentAire, formData, fetchData, closeModal) => {
+export const saveAire = async (endpointPath, currentAire, formData, fetchData, closeModal) => {
   try {
     // Validar datos antes de enviar
-    if (!formData.Marca || !formData.Frigorias) {
-      alert('Por favor complete todos los campos');
+    // La validación de Ubicacion puede ser opcional dependiendo de la lógica de negocio
+    if (!formData.Marca || !formData.Frigorias || !formData.Ubicacion ) {
+      alert('Por favor complete todos los campos requeridos (Marca, Frigorías y Ubicación).');
       return;
     }
 
-    // Ahora que el proxy sirve todo desde localhost:5000, usamos localhost
+    // Asumimos que el ID se pasa en currentAire.id (ej. currentAire.idMetro, currentAire.idMonteros)
     const url = currentAire
-      ? `http://localhost:5000/aires/${currentAire.idAires}`
-      : 'http://localhost:5000/aires';
+      ? `${API_BASE_URL}/${endpointPath}/${currentAire.id}`
+      : `${API_BASE_URL}/${endpointPath}`;
 
     const method = currentAire ? 'PUT' : 'POST';
 
@@ -23,7 +28,8 @@ export const saveAire = async (currentAire, formData, fetchData, closeModal) => 
       },
       body: JSON.stringify({
         Marca: formData.Marca,
-        Frigorias: parseInt(formData.Frigorias)
+        Frigorias: parseInt(formData.Frigorias),
+        Ubicacion: formData.Ubicacion // Incluir Ubicacion
       }),
     });
 
@@ -45,11 +51,10 @@ export const saveAire = async (currentAire, formData, fetchData, closeModal) => 
 };
 
 // Función para eliminar un aire
-export const deleteAire = async (id, fetchData) => {
+export const deleteAire = async (endpointPath, id, fetchData) => {
   try {
-    // Ahora que el proxy sirve todo desde localhost:5000, usamos localhost
-    const url = `http://localhost:5000/aires/${id}`;
-    console.log("URL de eliminación:", url); // Depuración
+    const url = `${API_BASE_URL}/${endpointPath}/${id}`;
+    console.log(`URL de eliminación para ${endpointPath}:`, url); // Depuración
 
     const response = await fetch(url, {
       method: 'DELETE',
