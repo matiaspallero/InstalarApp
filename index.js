@@ -1,6 +1,6 @@
 import { registerRootComponent } from 'expo';
 
-import App from './pages/inicio';
+import App from '../InstalarApp/pages/other'; // Cambiado para usar el navegador principal de pages/other.js
 
 // registerRootComponent calls AppRegistry.registerComponent('main', () => App);
 // It also ensures that whether you load the app in Expo Go or in a native build,

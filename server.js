@@ -1,7 +1,7 @@
 const express = require('express');
 const cors = require('cors');
-const { obtenerAires, insertarAire, eliminarAire } = require('./componentes/tablas');
-
+const { createProxyMiddleware } = require('http-proxy-middleware');
+const { obtenerAires, insertarAire, actualizarAire, eliminarAire } = require('./componentes/tablas');
 
 const app = express();
 app.use(cors());
@@ -46,15 +46,12 @@ app.put('/aires/:id', async (req, res) => {
   const { Marca, Frigorias } = req.body;
 
   try {
-    console.log('Actualizando aire:', { id, Marca, Frigorias });
-    
     if (!Marca || !Frigorias) {
       return res.status(400).json({ error: 'Marca y Frigorías son requeridas' });
     }
 
-    const resultado = await tablas.actualizarAire(id, Marca, Frigorias);
-    console.log('Resultado de la actualización:', resultado);
-    
+    // Usar 'actualizarAire' directamente ya que está desestructurado
+    const resultado = await actualizarAire(id, Marca, Frigorias);
     res.json(resultado);
   } catch (error) {
     console.error('Error en la ruta PUT:', error);
@@ -65,7 +62,7 @@ app.put('/aires/:id', async (req, res) => {
 app.delete('/aires/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    const result = await eliminarAire(id); // Usar la función importada
+    const result = await eliminarAire(id);
     res.status(200).json({ message: 'Aire eliminado exitosamente', result });
   } catch (error) {
     console.error('Error al eliminar el aire:', error);
@@ -73,11 +70,31 @@ app.delete('/aires/:id', async (req, res) => {
   }
 });
 
-const tablas = require('./componentes/tablas'); // Asegúrate de que la ruta es correcta
-
+// Proxy middleware para el frontend (servidor de desarrollo de Expo)
+// Esto debe ir DESPUÉS de tus rutas de API.
+// Asume que el servidor de desarrollo de Expo corre en el puerto 8081.
+// Cámbialo si `npm run web` usa un puerto diferente (ej. 19306).
+const EXPO_DEV_SERVER_PORT = 8081; // O el puerto que use `expo start --web`
+app.use('/', createProxyMiddleware({
+  target: `http://localhost:${EXPO_DEV_SERVER_PORT}`,
+  changeOrigin: true,
+  ws: true, // Habilitar proxy para WebSockets (importante para HMR)
+  logLevel: 'info', // Opcional: 'debug' para más detalles del proxy
+  onError: function(err, req, res) {
+    console.error('Error del Proxy:', err);
+    if (res && !res.headersSent) {
+      res.writeHead(500, { 'Content-Type': 'text/plain' });
+    }
+    if (res) {
+        res.end('Error del Proxy: No se pudo conectar al servidor de desarrollo de Expo en el puerto ' + EXPO_DEV_SERVER_PORT + '. ¿Está `npm run web` ejecutándose?');
+    }
+  }
+}));
 
 // Iniciar el servidor
 const PORT = 5000;
 app.listen(PORT, () => {
-  console.log(`Servidor corriendo en http://localhost:${PORT}`);
+  console.log(`Servidor API y Proxy corriendo en http://localhost:${PORT}`);
+  console.log(`Asegúrate de que el servidor de desarrollo de Expo (npm run web) esté corriendo en http://localhost:${EXPO_DEV_SERVER_PORT}`);
+  console.log(`Accede a la aplicación web a través de http://localhost:${PORT}`);
 });

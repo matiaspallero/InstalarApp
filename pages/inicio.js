@@ -1,6 +1,5 @@
 import React from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, StatusBar, ScrollView } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 
 const HomeScreen = ({ navigation }) => {
@@ -14,7 +13,7 @@ const HomeScreen = ({ navigation }) => {
                   <Text style={styles.headerText}>Bienvenidos😀</Text>
               </View>
               <View style={styles.container2}>
-                  <TouchableOpacity style={styles.button}>
+                  <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('App')}>
                       <Image source={require('../assets/edificio2.png')} style={styles.imgbutton} />
                       <Text style={styles.buttonText}>METRO</Text>
                   </TouchableOpacity>

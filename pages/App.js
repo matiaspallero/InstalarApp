@@ -1,25 +1,37 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, StyleSheet, ActivityIndicator, Button, Dimensions, Modal, TextInput, ScrollView } from 'react-native';
-import { saveAire, deleteAire } from '../componentes/botones'; // Importar las funciones desde botones.js
-import { StatusBar } from 'react-native';
-import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+import React, { useEffect, useState } from "react";
+import {
+  View,
+  Text,
+  FlatList,
+  StyleSheet,
+  ActivityIndicator,
+  Button,
+  Dimensions,
+  Modal,
+  TextInput,
+  ScrollView,
+} from "react-native";
+import { saveAire, deleteAire } from "../componentes/botones"; // Importar las funciones desde botones.js
+import { StatusBar } from "react-native";
+import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 
 const App = () => {
   const [aires, setAires] = useState([]); // Estado para almacenar los datos de la tabla
   const [loading, setLoading] = useState(true); // Estado para manejar la carga
   const [modalVisible, setModalVisible] = useState(false); // Estado para controlar la visibilidad del modal
   const [currentAire, setCurrentAire] = useState(null); // Estado para almacenar el aire que se está editando
-  const [formData, setFormData] = useState({ Marca: '', Frigorias: '' }); // Estado para manejar los datos del formulario
+  const [formData, setFormData] = useState({ Marca: "", Frigorias: "" }); // Estado para manejar los datos del formulario
 
   // Función para obtener los datos del backend
   const fetchData = async () => {
     try {
-      const response = await fetch('http://192.168.1.49:5000/aires');
+      // Ahora que el proxy sirve todo desde localhost:5000, usamos localhost
+      const response = await fetch("http://localhost:5000/aires");
       const data = await response.json();
       setAires(data);
       setLoading(false);
     } catch (error) {
-      console.error('Error al obtener datos:', error);
+      console.error("Error al obtener datos:", error);
       setLoading(false);
     }
   };
@@ -31,15 +43,15 @@ const App = () => {
   // Función para abrir el modal de agregar/editar
   const openModal = (aire = null) => {
     if (aire) {
-      console.log('Editando aire:', aire); // Para debugging
+      console.log("Editando aire:", aire); // Para debugging
       setCurrentAire(aire);
       setFormData({
-        Marca: aire.Marca || '',
-        Frigorias: aire.Frigorias ? aire.Frigorias.toString() : ''
+        Marca: aire.Marca || "",
+        Frigorias: aire.Frigorias ? aire.Frigorias.toString() : "",
       });
     } else {
       setCurrentAire(null);
-      setFormData({ Marca: '', Frigorias: '' });
+      setFormData({ Marca: "", Frigorias: "" });
     }
     setModalVisible(true);
   };
@@ -48,22 +60,21 @@ const App = () => {
   const closeModal = () => {
     setModalVisible(false);
     setCurrentAire(null);
-    setFormData({ Marca: '', Frigorias: '' });
+    setFormData({ Marca: "", Frigorias: "" });
   };
 
   // Función para manejar cambios en el formulario
   const handleInputChange = (name, value) => {
     console.log(`Cambiando ${name} a:`, value); // Para debugging
-    setFormData(prevData => ({
+    setFormData((prevData) => ({
       ...prevData,
-      [name]: value
+      [name]: value,
     }));
   };
 
   const handleSave = () => {
     saveAire(currentAire, formData, fetchData, closeModal);
   };
-  
 
   // Mostrar un indicador de carga mientras se obtienen los datos
   if (loading) {
@@ -93,7 +104,10 @@ const App = () => {
               <Text style={styles.frigorias}>Frigorías: {item.Frigorias}</Text>
               <View style={styles.actions}>
                 <Button title="Editar" onPress={() => openModal(item)} />
-                <Button title="Eliminar" onPress={() => deleteAire(item.idAires, fetchData)} />
+                <Button
+                  title="Eliminar"
+                  onPress={() => deleteAire(item.idAires, fetchData)}
+                />
               </View>
             </View>
           )}
@@ -104,21 +118,21 @@ const App = () => {
           <View style={styles.modalContainer}>
             <View style={styles.modalContent}>
               <Text style={styles.modalTitle}>
-                {currentAire ? 'Editar Aire' : 'Agregar Aire'}
+                {currentAire ? "Editar Aire" : "Agregar Aire"}
               </Text>
               <TextInput
                 style={styles.input}
                 placeholder="Marca"
                 value={formData.Marca}
-                onChangeText={(text) => handleInputChange('Marca', text)}
+                onChangeText={(text) => handleInputChange("Marca", text)}
               />
               <TextInput
                 style={styles.input}
                 placeholder="Frigorías"
                 value={formData.Frigorias}
                 onChangeText={(text) => {
-                  const numericValue = text.replace(/[^0-9]/g, '');
-                  handleInputChange('Frigorias', numericValue);
+                  const numericValue = text.replace(/[^0-9]/g, "");
+                  handleInputChange("Frigorias", numericValue);
                 }}
                 keyboardType="numeric"
               />
@@ -139,25 +153,25 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: "#f5f5f5",
   },
   title: {
     fontSize: 24,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 20,
-    textAlign: 'center',
+    textAlign: "center",
   },
   buttonContainer: {
     marginBottom: 20,
     paddingVertical: 10,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: "#f5f5f5",
   },
   item: {
-    backgroundColor: '#ffffff',
+    backgroundColor: "#ffffff",
     padding: 15,
     marginBottom: 10,
     borderRadius: 5,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.4,
     shadowRadius: 5,
@@ -165,52 +179,52 @@ const styles = StyleSheet.create({
   },
   marca: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   frigorias: {
     fontSize: 16,
-    color: '#555',
+    color: "#555",
   },
   actions: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
+    flexDirection: "row",
+    justifyContent: "flex-end",
     marginTop: 10,
     gap: 10,
   },
   loadingContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   modalContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
   },
   modalContent: {
-    width: Dimensions.get('window').width * 0.8,
+    width: Dimensions.get("window").width * 0.8,
     padding: 20,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     borderRadius: 10,
   },
   modalTitle: {
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 20,
-    textAlign: 'center',
+    textAlign: "center",
   },
   input: {
     height: 40,
-    borderColor: '#ccc',
+    borderColor: "#ccc",
     borderWidth: 1,
     borderRadius: 5,
     marginBottom: 15,
     paddingHorizontal: 10,
   },
   modalButtons: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
     gap: 10,
   },
   flatListContent: {

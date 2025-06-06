@@ -9,9 +9,10 @@ export const saveAire = async (currentAire, formData, fetchData, closeModal) => 
       return;
     }
 
+    // Ahora que el proxy sirve todo desde localhost:5000, usamos localhost
     const url = currentAire
-      ? `http://192.168.1.49:5000/aires/${currentAire.idAires}`
-      : 'http://192.168.1.49:5000/aires';
+      ? `http://localhost:5000/aires/${currentAire.idAires}`
+      : 'http://localhost:5000/aires';
 
     const method = currentAire ? 'PUT' : 'POST';
 
@@ -46,7 +47,8 @@ export const saveAire = async (currentAire, formData, fetchData, closeModal) => 
 // Función para eliminar un aire
 export const deleteAire = async (id, fetchData) => {
   try {
-    const url = `http://192.168.1.49:5000/aires/${id}`;
+    // Ahora que el proxy sirve todo desde localhost:5000, usamos localhost
+    const url = `http://localhost:5000/aires/${id}`;
     console.log("URL de eliminación:", url); // Depuración
 
     const response = await fetch(url, {
