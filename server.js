@@ -62,16 +62,16 @@ app.get('/concepcion', async (req, res) => {
 // Endpoint para insertar datos en la tabla Aires
 app.post('/metro', async (req, res) => {
   try {
-    const { Marca, Frigorias, Ubicacion, Servicio } = req.body; // Incluir Ubicacion
+    const { Marca, Frigorias, Ubicacion } = req.body; // Incluir Ubicacion
 
     // Validaciones
-    if (!Marca || !Frigorias || !Ubicacion || !Servicio) { // Considerar validar Ubicacion si es mandatorio
+    if (!Marca || !Frigorias) { // Considerar validar Ubicacion si es mandatorio
       return res.status(400).json({
         message: 'La marca y las frigorías son requeridas'
       });
     }
 
-    const resultado = await insertarAireMetro(Marca, Frigorias, Ubicacion, Servicio); // Usar la función de tablaMetro
+    const resultado = await insertarAireMetro(Marca, Frigorias, Ubicacion); // Usar la función de tablaMetro
     res.status(201).json(resultado);
   } catch (error) {
     console.error('Error en el servidor:', error);
@@ -84,16 +84,16 @@ app.post('/metro', async (req, res) => {
 
 app.post('/monteros', async (req, res) => {
   try {
-    const { Marca, Frigorias, Ubicacion, Servicio } = req.body; // Incluir Ubicacion
+    const { Marca, Frigorias, Ubicacion } = req.body; // Incluir Ubicacion
 
     // Validaciones
-    if (!Marca || !Frigorias || !Ubicacion || !Servicio) { // Considerar validar Ubicacion si es mandatorio
+    if (!Marca || !Frigorias || !Ubicacion) { // Considerar validar Ubicacion si es mandatorio
       return res.status(400).json({
         message: 'La marca y las frigorías son requeridas'
       });
     }
 
-    const resultado = await insertarAireMonteros(Marca, Frigorias, Ubicacion, Servicio); // Usar la función de tablaMonteros
+    const resultado = await insertarAireMonteros(Marca, Frigorias, Ubicacion); // Usar la función de tablaMonteros
     res.status(201).json(resultado);
   } catch (error) {
     console.error('Error en el servidor:', error);
@@ -106,16 +106,16 @@ app.post('/monteros', async (req, res) => {
 
 app.post('/concepcion', async (req, res) => {
   try {
-    const { Marca, Frigorias, Ubicacion, Servicio } = req.body; // Incluir Ubicacion
+    const { Marca, Frigorias, Ubicacion } = req.body; // Incluir Ubicacion
 
     // Validaciones
-    if (!Marca || !Frigorias || !Ubicacion || !Servicio) { // Considerar validar Ubicacion si es mandatorio
+    if (!Marca || !Frigorias || !Ubicacion) { // Considerar validar Ubicacion si es mandatorio
       return res.status(400).json({
         message: 'La marca y las frigorías son requeridas'
       });
     }
 
-    const resultado = await insertarAireConcepcion(Marca, Frigorias, Ubicacion, Servicio); // Usar la función de tablaConcepcion
+    const resultado = await insertarAireConcepcion(Marca, Frigorias, Ubicacion); // Usar la función de tablaConcepcion
     res.status(201).json(resultado);
   } catch (error) {
     console.error('Error en el servidor:', error);
@@ -128,15 +128,15 @@ app.post('/concepcion', async (req, res) => {
 
 app.put('/metro/:id', async (req, res) => {
   const { id } = req.params;
-  const { Marca, Frigorias, Ubicacion, Servicio } = req.body; // Incluir Ubicacion
+  const { Marca, Frigorias, Ubicacion } = req.body; // Incluir Ubicacion
 
   try {
     if (!Marca || !Frigorias || !Ubicacion || !Servicio) { // Considerar validar Ubicacion si es mandatorio
-      return res.status(400).json({ error: 'Marca, Frigorías y Ubicación son requeridas' });
+      return res.status(400).json({ error: 'Marca, Frigorías, Ubicación y Servicio son requeridas' });
     }
 
     // Usar la función de tablaMetro, el id es idMetro
-    const resultado = await actualizarAireMetro(id, Marca, Frigorias, Ubicacion, Servicio);
+    const resultado = await actualizarAireMetro(id, Marca, Frigorias, Ubicacion);
     res.json(resultado);
   } catch (error) {
     console.error('Error en la ruta PUT:', error);
@@ -146,15 +146,15 @@ app.put('/metro/:id', async (req, res) => {
 
 app.put('/monteros/:id', async (req, res) => {
   const { id } = req.params;
-  const { Marca, Frigorias, Ubicacion, Servicio } = req.body; // Incluir Ubicacion
+  const { Marca, Frigorias, Ubicacion } = req.body; // Incluir Ubicacion
 
   try {
-    if (!Marca || !Frigorias || !Ubicacion || !Servicio) { // Considerar validar Ubicacion si es mandatorio
-      return res.status(400).json({ error: 'Marca, Frigorías, Ubicación y Servicio son requeridas' });
+    if (!Marca || !Frigorias || !Ubicacion) { // Considerar validar Ubicacion si es mandatorio
+      return res.status(400).json({ error: 'Marca, Frigorías y Ubicación son requeridas' });
     }
 
     // Usar la función de tablaMonteros, el id es idMonteros
-    const resultado = await actualizarAireMonteros(id, Marca, Frigorias, Ubicacion, Servicio);
+    const resultado = await actualizarAireMonteros(id, Marca, Frigorias, Ubicacion);
     res.json(resultado);
   } catch (error) {
     console.error('Error en la ruta PUT:', error);
@@ -164,15 +164,15 @@ app.put('/monteros/:id', async (req, res) => {
 
 app.put('/concepcion/:id', async (req, res) => {
   const { id } = req.params;
-  const { Marca, Frigorias, Ubicacion, Servicio } = req.body; // Incluir Ubicacion
+  const { Marca, Frigorias, Ubicacion } = req.body; // Incluir Ubicacion
 
   try {
     if (!Marca || !Frigorias || !Ubicacion || !Servicio) { // Considerar validar Ubicacion si es mandatorio
-      return res.status(400).json({ error: 'Marca, Frigorías y Ubicación son requeridas' });
+      return res.status(400).json({ error: 'Marca, Frigorías, Ubicación y Servicio son requeridas' });
     }
 
     // Usar la función de tablaConcepcion, el id es idConcepcion
-    const resultado = await actualizarAireConcepcion(id, Marca, Frigorias, Ubicacion, Servicio);
+    const resultado = await actualizarAireConcepcion(id, Marca, Frigorias, Ubicacion);
     res.json(resultado);
   } catch (error) {
     console.error('Error en la ruta PUT:', error);

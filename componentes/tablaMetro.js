@@ -35,7 +35,7 @@ const obtenerAiresMETRO = () => {
 };
 
 // Función para insertar un nuevo registro en la tabla Aires
-const insertarAireMETRO = (Marca, Frigorias, Ubicacion, Servicio) => {
+const insertarAireMETRO = (Marca, Frigorias, Ubicacion) => {
   return new Promise((resolve, reject) => {
     if (!Marca || !Frigorias) { // Considera validar Ubicacion si es mandatorio
       reject(new Error('Marca y Frigorías son requeridas.'));
@@ -43,8 +43,8 @@ const insertarAireMETRO = (Marca, Frigorias, Ubicacion, Servicio) => {
     }
 
     connection.query(
-      'INSERT INTO metro (Marca, Frigorias, Ubicacion, Servicio) VALUES (?, ?, ?, ?)',
-      [Marca, parseInt(Frigorias), Ubicacion, Servicio],
+      'INSERT INTO metro (Marca, Frigorias, Ubicacion) VALUES (?, ?, ?)',
+      [Marca, parseInt(Frigorias), Ubicacion],
       (err, results) => {
         if (err) {
           console.error('Error en la inserción:', err);
@@ -55,8 +55,7 @@ const insertarAireMETRO = (Marca, Frigorias, Ubicacion, Servicio) => {
           id: results.insertId,
           Marca,
           Frigorias: parseInt(Frigorias),
-          Ubicacion,
-          Servicio,
+          Ubicacion
         });
       }
     );
@@ -64,12 +63,12 @@ const insertarAireMETRO = (Marca, Frigorias, Ubicacion, Servicio) => {
 };
 
 // Función para actualizar un registro en la tabla Aires
-const actualizarAireMETRO = (idMetro, Marca, Frigorias, Ubicacion, Servicio) => {
+const actualizarAireMETRO = (idMetro, Marca, Frigorias, Ubicacion) => {
   return new Promise((resolve, reject) => {
     // Considera validar los campos aquí también
     connection.query(
-      'UPDATE metro SET Marca = ?, Frigorias = ?, Ubicacion = ?, Servicio = ? WHERE idMetro = ?',
-      [Marca, Frigorias, Ubicacion, Servicio, idMetro],
+      'UPDATE metro SET Marca = ?, Frigorias = ?, Ubicacion = ? WHERE idMetro = ?',
+      [Marca, Frigorias, Ubicacion, idMetro],
       (err, results) => {
         if (err) {
           reject(err);
