@@ -31,9 +31,9 @@ const HomeScreen = ({ navigation }) => {
                       <Image source={require('../assets/inventario.png')} style={styles.imgbutton} />
                       <Text style={styles.buttonText}>INVENTARIO</Text>
                   </TouchableOpacity>
-                  <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('')} activeOpacity={0.5}>
-                      <Image source={require('../assets/otros.png')} style={styles.imgbutton} />
-                      <Text style={styles.buttonText}>OTROS</Text>
+                  <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('ScannerScreen')} activeOpacity={0.5}>
+                      <Image source={require('../assets/qr-scan.png')} style={styles.imgbutton} /> {/* Necesitarás un ícono para escanear QR */}
+                      <Text style={styles.buttonText}>ESCANEAR QR</Text>
                   </TouchableOpacity>
                   <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('')} activeOpacity={0.5}>
                       <Image source={require('../assets/pdf.png')} style={styles.imgbutton} />

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, FlatList, StyleSheet, ActivityIndicator } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
+import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 
 // IMPORTANTE: Reemplaza 'TU_IP_LOCAL_AQUI' con la dirección IP de la computadora donde corre el servidor.
 const SERVER_IP = '192.168.1.38'; // Ejemplo: '192.168.1.105'
@@ -92,18 +93,23 @@ const InventarioScreen = () => {
   );
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.header}>Inventario Total de Aires Acondicionados</Text>
-      {allAires.length === 0 && !loading ? (
-        <Text style={styles.emptyText}>No hay aires acondicionados para mostrar.</Text>
-      ) : (
-        <FlatList
-          data={allAires}
-          renderItem={renderItem}
-          keyExtractor={item => item.id}
-        />
-      )}
-    </View>
+    <SafeAreaProvider>
+      <SafeAreaView style={styles.container}>
+        <StatusBar style="auto" />
+        <View style={styles.container}>
+          <Text style={styles.header}>Inventario Total de Aires Acondicionados</Text>
+          {allAires.length === 0 && !loading ? (
+            <Text style={styles.emptyText}>No hay aires acondicionados para mostrar.</Text>
+          ) : (
+            <FlatList
+              data={allAires}
+              renderItem={renderItem}
+              keyExtractor={item => item.id}
+            />
+          )}
+        </View>
+      </SafeAreaView>
+    </SafeAreaProvider>
   );
 };
 
