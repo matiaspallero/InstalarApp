@@ -8,7 +8,7 @@ const HomeScreen = ({ navigation }) => {
   return (
     <SafeAreaProvider>
       <SafeAreaView style={styles.container}>
-        <StatusBar style="auto" />
+        <StatusBar style="dark" />
             <ScrollView contentContainerStyle={styles.scrollContainer}>
               <View style={styles.header}>
                   <Image style={styles.imagen} source={require('../assets/LOGO INSTALAR.jpg')} />
@@ -32,8 +32,8 @@ const HomeScreen = ({ navigation }) => {
                       <Text style={styles.buttonText}>INVENTARIO</Text>
                   </TouchableOpacity>
                   <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('ScannerScreen')} activeOpacity={0.5}>
-                      <Image source={require('../assets/qr-scan.png')} style={styles.imgbutton} /> {/* Necesitarás un ícono para escanear QR */}
-                      <Text style={styles.buttonText}>ESCANEAR QR</Text>
+                      <Image source={require('../assets/qr-scan.png')} style={styles.imgbutton} />
+                      <Text style={styles.buttonText}>OTROS</Text>
                   </TouchableOpacity>
                   <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('')} activeOpacity={0.5}>
                       <Image source={require('../assets/pdf.png')} style={styles.imgbutton} />

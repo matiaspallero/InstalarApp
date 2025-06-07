@@ -13,21 +13,13 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true,
-      "bundleIdentifier": "com.matiaspallero99.InstalarApp",
-      "infoPlist": {
-        "ITSAppUsesNonExemptEncryption": false
-      }
+      "supportsTablet": true
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      },
-      "permissions": [
-        "android.permission.CAMERA"
-      ],
-      "package": "com.matiaspallero99.InstalarApp"
+      }
     },
     "web": {
       "favicon": "./assets/logo2-2024.png"
@@ -43,18 +35,10 @@
             "useSQLCipher": false
           },
           "ios": {
-            "customBuildFlags": [
-              "-DSQLITE_ENABLE_DBSTAT_VTAB=1 -DSQLITE_ENABLE_SNAPSHOT=1"
-            ]
+            "customBuildFlags": ["-DSQLITE_ENABLE_DBSTAT_VTAB=1 -DSQLITE_ENABLE_SNAPSHOT=1"]
           }
         }
-      ],
-      "expo-barcode-scanner"
-    ],
-    "extra": {
-      "eas": {
-        "projectId": "39cc810f-66da-4d65-b1c8-16d63b1f4e9c"
-      }
-    }
+      ]
+    ]
   }
 }

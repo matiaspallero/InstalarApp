@@ -6,8 +6,6 @@ import AppMetro from './App'; // Añadido: Importar la pantalla de gestión de a
 import AppMonteros from './MonterosScreen';
 import AppConcepcion from './ConcepcionScreen';
 import AppInventario from './InventarioScreen';
-import ScannerScreen from './ScannerScreen';
-
 
 
 const Stack = createStackNavigator();
@@ -21,7 +19,6 @@ export default function App() {
        <Stack.Screen name="AppMonteros" component={AppMonteros} options={{ title: 'Gestión de Monteros' }} />
        <Stack.Screen name="AppConcepcion" component={AppConcepcion} options={{ title: 'Gestión de Concepcion' }} />
        <Stack.Screen name="AppInventario" component={AppInventario} options={{ title: 'Inventario' }} />
-       <Stack.Screen name="ScannerScreen" component={ScannerScreen} options={{ title: 'Escanear Código QR' }} />
      </Stack.Navigator>
    </NavigationContainer>
   );

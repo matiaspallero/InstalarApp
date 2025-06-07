@@ -26,7 +26,7 @@ const App = () => {
   const [currentAire, setCurrentAire] = useState(null); // Estado para almacenar el aire que se está editando
   const [infoModalVisible, setInfoModalVisible] = useState(false); // Estado para el modal de información
   const [selectedAireDetails, setSelectedAireDetails] = useState(null); // Estado para los detalles del aire seleccionado
-  const [formData, setFormData] = useState({ Marca: "", Frigorias: "", Ubicacion: "", Servicio: "" }); // Formulario
+  const [formData, setFormData] = useState({ Marca: "", Frigorias: "", Ubicacion: "" }); // Formulario
   const ENDPOINT_PATH = "metro"; // Endpoint específico para esta pantalla
   const [qrCodeValue, setQrCodeValue] = useState(''); // Estado para el valor del código QR
   const [displayQrInModal, setDisplayQrInModal] = useState(false); // Estado para mostrar QR en el modal
@@ -62,7 +62,7 @@ const App = () => {
       });
     } else {
       setCurrentAire(null);
-      setFormData({ Marca: "", Frigorias: "", Ubicacion: "", Servicio: "" });
+      setFormData({ Marca: "", Frigorias: "", Ubicacion: "" });
     }
     setModalVisible(true);
   };
@@ -71,7 +71,7 @@ const App = () => {
   const closeModal = () => {
     setModalVisible(false);
     setCurrentAire(null);
-    setFormData({ Marca: "", Frigorias: "", Ubicacion: "", Servicio: "" });
+    setFormData({ Marca: "", Frigorias: "", Ubicacion: "" });
   };
 
   // Función para abrir el modal de información
@@ -155,7 +155,6 @@ const App = () => {
               <Text style={styles.marca}>Marca: {item.Marca}</Text>
               <Text style={styles.frigorias}>Frigorías: {item.Frigorias}</Text>
               <Text style={styles.ubicacion}>Ubicación: {item.Ubicacion}</Text>
-              <Text style={styles.servicio}>Servicio: {item.Servicio}</Text>
               <View style={styles.actions}>
                 <Button title="Info" onPress={() => openInfoModal(item)} activeOpacity={0.5} />
                 <Button title="Editar" onPress={() => openModal(item)} activeOpacity={0.5}/>
@@ -197,12 +196,6 @@ const App = () => {
                 placeholder="Ubicación"
                 value={formData.Ubicacion}
                 onChangeText={(text) => handleInputChange("Ubicacion", text)}
-              />
-              <TextInput
-                style={styles.input}
-                placeholder="Servicio"
-                value={formData.Servicio}
-                onChangeText={(text) => handleInputChange("Servicio", text)}
               />
               <View style={styles.modalButtons}>
                 <Button title="Cancelar" onPress={closeModal} />
@@ -301,11 +294,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "#555",
     placeholder: "Ubicación",
-  },
-  servicio: {
-    fontSize: 16,
-    color: "#555",
-    placeholder: "Servicio",
   },
   actions: {
     flexDirection: "row",
