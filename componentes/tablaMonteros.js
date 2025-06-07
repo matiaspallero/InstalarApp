@@ -54,8 +54,7 @@ const insertarAireM = (Marca, Frigorias, Ubicacion, Servicio) => {
           id: results.insertId,
           Marca,
           Frigorias: parseInt(Frigorias),
-          Ubicacion,
-          Servicio
+          Ubicacion
         });
       }
     );

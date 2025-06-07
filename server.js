@@ -67,7 +67,7 @@ app.post('/metro', async (req, res) => {
     // Validaciones
     if (!Marca || !Frigorias || !Ubicacion || !Servicio) { // Considerar validar Ubicacion si es mandatorio
       return res.status(400).json({
-        message: 'La marca, las frigorías, la ubicacion y el servicio son requeridas'
+        message: 'La marca y las frigorías son requeridas'
       });
     }
 
@@ -89,7 +89,7 @@ app.post('/monteros', async (req, res) => {
     // Validaciones
     if (!Marca || !Frigorias || !Ubicacion || !Servicio) { // Considerar validar Ubicacion si es mandatorio
       return res.status(400).json({
-        message: 'La marca, las frigorías, la ubicacion y el servicio son requeridas'
+        message: 'La marca y las frigorías son requeridas'
       });
     }
 
@@ -111,7 +111,7 @@ app.post('/concepcion', async (req, res) => {
     // Validaciones
     if (!Marca || !Frigorias || !Ubicacion || !Servicio) { // Considerar validar Ubicacion si es mandatorio
       return res.status(400).json({
-        message: 'La marca, las frigorías, la ubicacion y el servicio son requeridas'
+        message: 'La marca y las frigorías son requeridas'
       });
     }
 
@@ -132,7 +132,7 @@ app.put('/metro/:id', async (req, res) => {
 
   try {
     if (!Marca || !Frigorias || !Ubicacion || !Servicio) { // Considerar validar Ubicacion si es mandatorio
-      return res.status(400).json({ error: 'Marca, Frigorías, Ubicación y Servicio son requeridas' });
+      return res.status(400).json({ error: 'Marca, Frigorías y Ubicación son requeridas' });
     }
 
     // Usar la función de tablaMetro, el id es idMetro
@@ -168,7 +168,7 @@ app.put('/concepcion/:id', async (req, res) => {
 
   try {
     if (!Marca || !Frigorias || !Ubicacion || !Servicio) { // Considerar validar Ubicacion si es mandatorio
-      return res.status(400).json({ error: 'Marca, Frigorías, Ubicación y Servicio son requeridas' });
+      return res.status(400).json({ error: 'Marca, Frigorías y Ubicación son requeridas' });
     }
 
     // Usar la función de tablaConcepcion, el id es idConcepcion

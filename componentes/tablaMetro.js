@@ -37,8 +37,8 @@ const obtenerAiresMETRO = () => {
 // Función para insertar un nuevo registro en la tabla Aires
 const insertarAireMETRO = (Marca, Frigorias, Ubicacion, Servicio) => {
   return new Promise((resolve, reject) => {
-    if (!Marca || !Frigorias || !Ubicacion || !Servicio) { // Considera validar Ubicacion si es mandatorio
-      reject(new Error('Marca, Frigorías, Ubicación y Servicio son requeridas.'));
+    if (!Marca || !Frigorias) { // Considera validar Ubicacion si es mandatorio
+      reject(new Error('Marca y Frigorías son requeridas.'));
       return;
     }
 

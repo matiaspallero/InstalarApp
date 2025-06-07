@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { View, Text, FlatList, StyleSheet, ActivityIndicator } from 'react-native';
+import { View, Text, FlatList, StyleSheet, ActivityIndicator} from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 
@@ -93,23 +93,18 @@ const InventarioScreen = () => {
   );
 
   return (
-    <SafeAreaProvider>
-      <SafeAreaView style={styles.container}>
-        <StatusBar style="auto" />
-        <View style={styles.container}>
-          <Text style={styles.header}>Inventario Total de Aires Acondicionados</Text>
-          {allAires.length === 0 && !loading ? (
-            <Text style={styles.emptyText}>No hay aires acondicionados para mostrar.</Text>
-          ) : (
-            <FlatList
-              data={allAires}
-              renderItem={renderItem}
-              keyExtractor={item => item.id}
-            />
-          )}
-        </View>
-      </SafeAreaView>
-    </SafeAreaProvider>
+      <View style={styles.container}>
+        <Text style={styles.header}>Inventario Total de Aires Acondicionados</Text>
+        {allAires.length === 0 && !loading ? (
+          <Text style={styles.emptyText}>No hay aires acondicionados para mostrar.</Text>
+        ) : (
+          <FlatList
+            data={allAires}
+            renderItem={renderItem}
+            keyExtractor={item => item.id}
+          />
+        )}
+      </View>
   );
 };
 

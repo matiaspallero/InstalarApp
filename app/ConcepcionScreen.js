@@ -306,6 +306,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "#555",
     placeholder: "Servicio",
+    fontWeight: "bold",
   },
   actions: {
     flexDirection: "row",

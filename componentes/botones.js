@@ -10,7 +10,7 @@ export const saveAire = async (endpointPath, currentAire, formData, fetchData, c
     // Validar datos antes de enviar
     // La validación de Ubicacion puede ser opcional dependiendo de la lógica de negocio
     if (!formData.Marca || !formData.Frigorias || !formData.Ubicacion || !formData.Servicio) {
-      alert('Por favor complete todos los campos requeridos (Marca, Frigorías, Ubicación y Servicio).');
+      alert('Por favor complete todos los campos requeridos (Marca, Frigorías y Ubicación).');
       return;
     }
 

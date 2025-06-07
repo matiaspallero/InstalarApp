@@ -155,7 +155,7 @@ const AppMonteros = () => {
               <Text style={styles.marca}>Marca: {item.Marca}</Text>
               <Text style={styles.frigorias}>Frigorías: {item.Frigorias}</Text>
               <Text style={styles.ubicacion}>Ubicación: {item.Ubicacion}</Text>
-              <Text style={styles.servicio}>Servicio: {item.servicio}</Text>
+              <Text style={styles.servicio}>Servicio: {item.Servicio}</Text>
               <View style={styles.actions}>
                 <Button title="Info" onPress={() => openInfoModal(item)} activeOpacity={0.5}>Info</Button>
                 <Button title="Editar" onPress={() => openModal(item)} />
@@ -298,6 +298,11 @@ const styles = StyleSheet.create({
     placeholder: "Frigorías",
   },
   ubicacion: {
+    fontSize: 16,
+    color: "#555",
+    placeholder: "Ubicación",
+  },
+  servicio: {
     fontSize: 16,
     color: "#555",
     placeholder: "Ubicación",
