@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { View, Text, FlatList, StyleSheet, ActivityIndicator} from 'react-native';
+import { View, Text, FlatList, StyleSheet, ActivityIndicator, Platform } from 'react-native'; // Importar Platform
 import { useFocusEffect } from '@react-navigation/native';
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 
@@ -93,41 +93,50 @@ const InventarioScreen = () => {
   );
 
   return (
-      <View style={styles.container}>
-        <Text style={styles.header}>Inventario Total de Aires Acondicionados</Text>
-        {allAires.length === 0 && !loading ? (
-          <Text style={styles.emptyText}>No hay aires acondicionados para mostrar.</Text>
-        ) : (
+    <SafeAreaProvider>
+      <SafeAreaView style={styles.container}>
+        {/* El indicador de carga principal se maneja antes de este bloque de retorno,
+            por lo que FlatList solo se renderiza cuando loading es false. */}
+        <View style={styles.contentView}>
           <FlatList
             data={allAires}
             renderItem={renderItem}
             keyExtractor={item => item.id}
+            style={styles.flatList} // Asegura que la FlatList ocupe el espacio de contentView
+            ListHeaderComponent={<Text style={styles.header}>Inventario Total de Aires Acondicionados</Text>}
+            ListEmptyComponent={<Text style={styles.emptyText}>No hay aires acondicionados para mostrar.</Text>}
+            contentContainerStyle={styles.flatListContent} // Para el layout interno de la lista (ej. ListEmptyComponent)
           />
-        )}
-      </View>
+        </View>
+      </SafeAreaView>
+    </SafeAreaProvider>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: 20,
-    paddingHorizontal: 10,
-    fontSize: 15,
+    backgroundColor: '#f5f5f5', // Fondo similar a otras pantallas
+  },
+  contentView: { // Nuevo contenedor para el padding interno
+    flex: 1,
+    padding: 20,
+    ...(Platform.OS === 'web' && { overflowY: 'auto' }), // Clave para el scroll en web en este contenedor
   },
   centered: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: '#f5f5f5',
   },
   header: {
     fontSize: 22,
     fontWeight: 'bold',
-    marginBottom: 15,
+    marginBottom: 20,
     textAlign: 'center',
   },
   itemContainer: {
-    backgroundColor: '#f9f9f9',
+    backgroundColor: '#ffffff', // Fondo blanco para efecto tarjeta
     padding: 15,
     marginBottom: 10,
     borderRadius: 5,
@@ -142,11 +151,20 @@ const styles = StyleSheet.create({
   itemOrigen: {
     fontSize: 15,
     fontWeight: 'bold',
+    marginTop: 5,
+    color: '#555'
   },
   emptyText: {
     textAlign: 'center',
     marginTop: 20,
     fontSize: 16,
+    color: '#666',
+  },
+  flatListContent: {
+    flexGrow: 1,
+  },
+  flatList: { // Estilo para la FlatList
+    flex: 1, // Para que la FlatList se expanda dentro de contentView
   }
 });
 

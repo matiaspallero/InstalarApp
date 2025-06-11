@@ -14,6 +14,7 @@ import {
 import { saveAire, deleteAire } from "../componentes/botones"; // Importar las funciones desde botones.js
 import { StatusBar } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
+import QRCode from 'react-native-qrcode-svg'; // Importar QRCode
 
 // IMPORTANTE: Reemplaza 'TU_IP_LOCAL_AQUI' con la dirección IP de la computadora donde corre el servidor.
 const SERVER_IP = '192.168.1.38'; // Ejemplo: '192.168.1.105'
@@ -28,6 +29,8 @@ const AppMonteros = () => {
   const ENDPOINT_PATH = "monteros"; // Endpoint específico para esta pantalla
   const [infoModalVisible, setInfoModalVisible] = useState(false); // Estado para el modal de información
   const [selectedAireDetails, setSelectedAireDetails] = useState(null); // Estado para los detalles del aire seleccionado
+  const [qrCodeValue, setQrCodeValue] = useState(''); // Estado para el valor del código QR
+  const [displayQrInModal, setDisplayQrInModal] = useState(false); // Estado para mostrar QR en el modal
 
   // Función para obtener los datos del backend
   const fetchData = async () => {
@@ -75,6 +78,8 @@ const AppMonteros = () => {
     // Función para abrir el modal de información
   const openInfoModal = (monteros) => {
     setSelectedAireDetails(monteros);
+    setQrCodeValue(''); // Limpiar valor QR anterior
+    setDisplayQrInModal(false); // No mostrar QR inicialmente
     setInfoModalVisible(true);
   };
 
@@ -82,6 +87,24 @@ const AppMonteros = () => {
   const closeInfoModal = () => {
     setInfoModalVisible(false);
     setSelectedAireDetails(null);
+    setQrCodeValue('');
+    setDisplayQrInModal(false);
+  };
+
+    // Función para generar y mostrar el código QR
+  const handleGenerateQr = () => {
+    if (selectedAireDetails) {
+      const qrData = JSON.stringify({
+        id: selectedAireDetails.idMetro,
+        marca: selectedAireDetails.Marca,
+        frigorias: selectedAireDetails.Frigorias,
+        ubicacion: selectedAireDetails.Ubicacion,
+        servicio: selectedAireDetails.Servicio,
+        screen: ENDPOINT_PATH, // Identificador de la pantalla/tabla de origen
+      });
+      setQrCodeValue(qrData);
+      setDisplayQrInModal(true);
+    }
   };
 
   // Función para manejar cambios en el formulario
@@ -175,6 +198,12 @@ const AppMonteros = () => {
                 value={formData.Ubicacion}
                 onChangeText={(text) => handleInputChange("Ubicacion", text)}
               />
+              <TextInput
+                style={styles.input}
+                placeholder="Servicio"
+                value={formData.Servicio}
+                onChangeText={(text) => handleInputChange("Servicio", text)}
+              />
               <View style={styles.modalButtons}>
                 <Button title="Cancelar" onPress={closeModal} />
                 <Button title="Guardar" onPress={handleSave} />
@@ -188,6 +217,8 @@ const AppMonteros = () => {
           <Modal visible={infoModalVisible} animationType="fade" transparent={true} onRequestClose={closeInfoModal}>
             <View style={styles.modalContainer}>
               <View style={styles.modalContent}>
+              {!displayQrInModal ? (
+                <>
                 <Text style={styles.modalTitle}>Detalles del Aire</Text>
                 <Text style={styles.detailText}><Text style={styles.detailLabel}>Marca:</Text> {selectedAireDetails.Marca}</Text>
                 <Text style={styles.detailText}><Text style={styles.detailLabel}>Frigorías:</Text> {selectedAireDetails.Frigorias}</Text>
@@ -197,6 +228,26 @@ const AppMonteros = () => {
                   <Button title="Generar QR" onPress={closeInfoModal} />
                   <Button title="Cerrar" onPress={closeInfoModal} />
                 </View>
+                </>
+                ) : (
+                <>
+                  <Text style={styles.modalTitle}>Código QR</Text>
+                    {qrCodeValue ? (
+                      <View style={styles.qrCodeContainer}>
+                        <QRCode
+                          value={qrCodeValue}
+                          size={Dimensions.get("window").width * 0.3} // Ajustar tamaño del QR
+                          backgroundColor="white"
+                          color="black"
+                        />
+                      </View>
+                    ) : <Text>Generando QR...</Text>}
+                    <View style={styles.modalButtons}>
+                      <Button title="Volver a Detalles" onPress={() => setDisplayQrInModal(false)} />
+                      <Button title="Cerrar" onPress={closeInfoModal} />
+                    </View>
+                  </>
+                )}
               </View>
             </View>
           </Modal>
@@ -307,6 +358,11 @@ const styles = StyleSheet.create({
   },
   detailLabel: {
     fontWeight: 'bold',
+  },
+  qrCodeContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginVertical: 20,
   },
 });
 

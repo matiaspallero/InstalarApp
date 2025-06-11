@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Text, View, StyleSheet, Button, Modal, Dimensions } from 'react-native';
-import { BarCodeScanner } from 'expo-barcode-scanner';
+
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 
 const ScannerScreen = () => {

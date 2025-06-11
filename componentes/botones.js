@@ -29,7 +29,8 @@ export const saveAire = async (endpointPath, currentAire, formData, fetchData, c
       body: JSON.stringify({
         Marca: formData.Marca,
         Frigorias: parseInt(formData.Frigorias),
-        Ubicacion: formData.Ubicacion // Incluir Ubicacion
+        Ubicacion: formData.Ubicacion, // Incluir Ubicacion
+        Servicio: formData.Servicio,
       }),
     });
 

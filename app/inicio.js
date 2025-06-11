@@ -8,7 +8,7 @@ const HomeScreen = ({ navigation }) => {
   return (
     <SafeAreaProvider>
       <SafeAreaView style={styles.container}>
-        <StatusBar style="dark" />
+        <StatusBar style="auto" />
             <ScrollView contentContainerStyle={styles.scrollContainer}>
               <View style={styles.header}>
                   <Image style={styles.imagen} source={require('../assets/LOGO INSTALAR.jpg')} />
@@ -31,11 +31,11 @@ const HomeScreen = ({ navigation }) => {
                       <Image source={require('../assets/inventario.png')} style={styles.imgbutton} />
                       <Text style={styles.buttonText}>INVENTARIO</Text>
                   </TouchableOpacity>
-                  <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('ScannerScreen')} activeOpacity={0.5}>
-                      <Image source={require('../assets/qr-scan.png')} style={styles.imgbutton} />
-                      <Text style={styles.buttonText}>OTROS</Text>
-                  </TouchableOpacity>
                   <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('')} activeOpacity={0.5}>
+                      <Image source={require('../assets/qr-scan.png')} style={styles.imgbutton} />
+                      <Text style={styles.buttonText}>QR</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('AppPDF')} activeOpacity={0.5}>
                       <Image source={require('../assets/pdf.png')} style={styles.imgbutton} />
                       <Text style={styles.buttonText}>PDF'S</Text>
                   </TouchableOpacity>
